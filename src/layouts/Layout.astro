@@ -5,11 +5,12 @@ const {
   title = 'ntemposd',
   description = 'Product Manager • Builder',
   entry = null,
+  ogImage = null,
 } = Astro.props;
 
 const site = (Astro.site ?? Astro.url.origin).toString();
 
-function absUrl(maybeUrl) {
+function absUrl(maybeUrl: any) {
   if (!maybeUrl) return null;
   try {
     return new URL(maybeUrl, site).toString();
@@ -18,7 +19,9 @@ function absUrl(maybeUrl) {
   }
 }
 
-const ogImageUrl = entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null;
+// Prefer an explicit `ogImage` prop (absolute URL) if provided by a page. Otherwise
+// normalize the entry's image (if present) to an absolute URL.
+const ogImageUrl = ogImage ?? (entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null);
 const ogTitle = entry?.data?.title ?? title;
 const ogDesc = entry?.data?.excerpt ?? description;
 ---

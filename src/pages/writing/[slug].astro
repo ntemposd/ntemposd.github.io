@@ -65,12 +65,23 @@ const postAssetUrls = import.meta.glob('../../assets/posts/*.{png,jpg,jpeg,webp,
 const urlMap = Object.fromEntries(
   Object.entries(postAssetUrls).map(([k, url]) => [toBase(k), url as string])
 );
+
+// Compute an absolute og image URL for social cards. Prefer the bundled (hashed) URL
+// so the image is publicly accessible instead of the raw `/posts/...` source path.
+let ogImage: string | null = null;
+if (cover && (cover as any).src) {
+  ogImage = new URL((cover as any).src, (Astro.site ?? Astro.url.origin)).toString();
+} else if (typeof rawCover === 'string') {
+  const mapped = urlMap[toBase(rawCover)];
+  if (mapped) ogImage = new URL(mapped, (Astro.site ?? Astro.url.origin)).toString();
+}
 ---
 
 <Layout
   title={`${entry.data.title} — ntemposd`}
   description={entry.data.excerpt ?? ''}
   entry={entry}
+  ogImage={ogImage}
 >
   <h1 class="text-3xl font-semibold mb-2">{entry.data.title}</h1>
   {entry.data.excerpt && <p class="prose prose-neutral max-w-none lg:prose-lg">{entry.data.excerpt}</p>}
@@ -109,7 +120,8 @@ const urlMap = Object.fromEntries(
 
   {/* Tiny client-side fix: rewrite /posts/filename.ext to the bundled URL */}
   <script type="module">
-    const map = /** @type {Record<string,string>} */ (JSON.parse({JSON.stringify(urlMap)}));
+    // Inject the server-built map object directly into the client script.
+    const map = {JSON.stringify(urlMap)};
     const root = document.getElementById('post-body');
     if (root) {
       root.querySelectorAll('img[src^="/posts/"]').forEach((img) => {
