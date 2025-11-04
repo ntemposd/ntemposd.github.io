@@ -34,8 +34,8 @@ const isoDate = (entry.data.date instanceof Date ? entry.data.date : new Date(en
 
 const tags = normTags(entry.data.tags);
 
-// Prefer `image`, fall back to `cover`
-const rawCover = entry.data.image ?? entry.data.cover ?? null;
+// Prefer `image`, fall back to `cover` (use `any` to avoid strict typing issues)
+const rawCover = (entry.data as any).image ?? (entry.data as any).cover ?? null;
 
 // Resolve hero cover to ImageMetadata if it’s a string like "/posts/foo.png"
 const toBase = (p: string) => p.split('/').pop()!.toLowerCase();
@@ -66,14 +66,28 @@ const urlMap = Object.fromEntries(
   Object.entries(postAssetUrls).map(([k, url]) => [toBase(k), url as string])
 );
 
-// Compute an absolute og image URL for social cards. Prefer the bundled (hashed) URL
-// so the image is publicly accessible instead of the raw `/posts/...` source path.
+// Compute an absolute og image URL for social cards.
+// Prefer a PNG/JPEG original post image when the frontmatter points to one
+// (Twitter historically has spotty WebP/AVIF support). Fall back to the
+// bundled hashed URL if needed, and finally to the ImageMetadata src.
+const siteOrigin = (Astro.site ?? Astro.url.origin).toString();
 let ogImage: string | null = null;
-if (cover && (cover as any).src) {
-  ogImage = new URL((cover as any).src, (Astro.site ?? Astro.url.origin)).toString();
-} else if (typeof rawCover === 'string') {
-  const mapped = urlMap[toBase(rawCover)];
-  if (mapped) ogImage = new URL(mapped, (Astro.site ?? Astro.url.origin)).toString();
+
+if (typeof rawCover === 'string') {
+  // absolute URL from the original source path (e.g. '/posts/foo.png')
+  const orig = new URL(rawCover, siteOrigin).toString();
+
+  // If the raw path points to a PNG/JPEG/GIF, prefer it for OG (safe for Twitter)
+  if (/\.(png|jpe?g|gif)$/i.test(rawCover)) {
+    ogImage = orig;
+  } else {
+    // otherwise prefer the bundled hashed URL (may be webp/avif) if available
+    const mapped = urlMap[toBase(rawCover)];
+    if (mapped) ogImage = new URL(mapped, siteOrigin).toString();
+    else ogImage = orig;
+  }
+} else if (cover && (cover as any).src) {
+  ogImage = new URL((cover as any).src, siteOrigin).toString();
 }
 ---
 
@@ -121,7 +135,8 @@ if (cover && (cover as any).src) {
   {/* Tiny client-side fix: rewrite /posts/filename.ext to the bundled URL */}
   <script type="module">
     // Inject the server-built map object directly into the client script.
-    const map = {JSON.stringify(urlMap)};
+    // Use JSON.parse on an inlined JSON string to produce a real object.
+    const map = JSON.parse(`{JSON.stringify(urlMap)}`);
     const root = document.getElementById('post-body');
     if (root) {
       root.querySelectorAll('img[src^="/posts/"]').forEach((img) => {
