@@ -128,16 +128,16 @@ if (typeof rawCover === 'string') {
     </div>
   )}
 
-  <article id="post-body" class="prose prose-neutral max-w-none lg:prose-xl">
+  <article id="post-body" class="prose prose-neutral max-w-none lg:prose-xl" data-urlmap={JSON.stringify(urlMap)}>
     <Content />
   </article>
 
   {/* Tiny client-side fix: rewrite /posts/filename.ext to the bundled URL */}
   <script type="module">
-    // Inject the server-built map object directly into the client script.
-    // Use JSON.parse on an inlined JSON string to produce a real object.
-    const map = JSON.parse(`{JSON.stringify(urlMap)}`);
+    // Read the pre-serialized map from the article's data attribute and rewrite
+    // inline markdown <img src="/posts/..."></img> to the bundled hashed URLs.
     const root = document.getElementById('post-body');
+    const map = root && root.dataset.urlmap ? JSON.parse(root.dataset.urlmap) : {};
     if (root) {
       root.querySelectorAll('img[src^="/posts/"]').forEach((img) => {
         const src = img.getAttribute('src');
