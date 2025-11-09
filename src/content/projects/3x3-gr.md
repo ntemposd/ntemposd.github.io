@@ -2,7 +2,7 @@
 title: "3x3.gr"
 blurb: "Online management tool for organizing and promoting 3-on-3 street basketball tournaments."
 tags: ["Next.js", "Stripe", "Backoffice"]
-link: "https://github.com/ntemposd/my-rookie"
+link: "http://www.3x3.gr/"
 image: "/projects/3x3-gr.webp"
 order: 5
 draft: false

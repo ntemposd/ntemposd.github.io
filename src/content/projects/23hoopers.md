@@ -2,7 +2,7 @@
 title: "23hoopers"
 blurb: "A Phoenix + Supabase app for basketball player cards game and talent tracking services."
 tags: ["Elixir", "Phoenix", "Supabase", "Fly.io"]
-link: "https://github.com/ntemposd/my-rookie"
+link: "https://23hoopers.com/"
 image: "/projects/23hoopers.webp"
 order: 8
 draft: false
