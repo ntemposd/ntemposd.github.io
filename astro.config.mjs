@@ -1,10 +1,14 @@
 // astro.config.mjs
 import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://ntemposd.github.io',
-  base: '/',           // root
+  site: 'https://ntemposd.me', // ✅ Use your custom domain (not GitHub Pages)
+  base: '/',                   // root
   output: 'static',
-  integrations: [tailwind()],
+  integrations: [
+    tailwind(),
+    sitemap(),                 // ✅ Adds automatic sitemap generation
+  ],
 });
