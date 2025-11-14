@@ -24,9 +24,12 @@ const networks = [
       id="native-share"
       type="button"
       class="rounded-lg border px-3 py-1.5 text-sm hover:bg-gray-50 transition"
+      data-title={postTitle}
+      data-url={finalUrl}
     >
       Share
     </button>
+
 
     <!-- Copy link -->
     <button
@@ -57,11 +60,14 @@ const networks = [
     const shareBtn = document.getElementById('native-share');
     const copyBtn = document.getElementById('copy-link');
 
+    const postTitle = shareBtn?.getAttribute('data-title');
+    const postUrl = shareBtn?.getAttribute('data-url');
+
     if (!('share' in navigator)) shareBtn?.remove();
     else {
       shareBtn?.addEventListener('click', async () => {
         try {
-          await navigator.share({ title: '{postTitle}', url: '{finalUrl}' });
+          await navigator.share({ title: postTitle, url: postUrl });
         } catch {}
       });
     }
