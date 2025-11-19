@@ -28,9 +28,8 @@ const isAstroImage = (img: unknown): img is ImageMetadata =>
 const { entry } = Astro.props;
 const { Content } = await entry.render();
 
-const isoDate = (entry.data.date instanceof Date ? entry.data.date : new Date(entry.data.date))
-  .toISOString()
-  .split('T')[0];
+// Normalize date (support string or Date) by coercing via `new Date()`
+const isoDate = new Date(entry.data.date).toISOString().split('T')[0];
 
 const tags = normTags(entry.data.tags);
 

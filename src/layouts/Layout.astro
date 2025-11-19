@@ -36,6 +36,8 @@ const ogDesc = entry?.data?.excerpt ?? description;
     <meta name="description" content={description} />
     <title>{title}</title>
 
+    <link rel="canonical" href={Astro.url.href} />
+
     <!-- ✅ Open Graph / Twitter Meta -->
     {
       entry && (
