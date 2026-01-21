@@ -49,8 +49,8 @@ NOTION_EXPERIENCE_DB_ID=your-experience-database-id
 NOTION_POSTS_DATE_PROP=Date
 NOTION_POSTS_STRICT_DATE=true
 
-# Site configuration (use your live URL; for GitHub Pages: https://<user>.github.io/<repo>)
-SITE_BASE_URL=https://ntemposd.me
+# Site configuration (local .env)
+SITE_BASE_URL=http://localhost:4321
 
 # Optional: Google Analytics (only if you use GA)
 PUBLIC_GA_ID=G-XXXXXXXXXX
@@ -106,27 +106,27 @@ Opens at `http://localhost:4321`
 
 ```
 myastro/
-├── public/              # Static assets served directly
-│   ├── posts/          # Copied images for dev (avoid 404s)
+├── public/    # Static assets served directly
+│   ├── posts/    # Copied images for dev (avoid 404s)
 │   └── robots.txt
-├── scripts/            # Notion sync scripts
+├── scripts/    # Notion sync scripts
 │   ├── sync-posts.ts
 │   ├── sync-projects.ts
 │   └── sync-experience.ts
 ├── src/
-│   ├── assets/         # Bundled images (hashed in prod)
+│   ├── assets/    # Bundled images (hashed in prod)
 │   │   ├── posts/
 │   │   └── projects/
 │   ├── components/
-│   │   ├── Share.astro           # Social sharing buttons
-│   │   └── SubstackSubscribe.astro # Newsletter embed
-│   ├── content/        # Content collections
+│   │   ├── Share.astro    # Social sharing buttons
+│   │   └── SubstackSubscribe.astro    # Newsletter embed
+│   ├── content/    # Content collections
 │   │   ├── config.ts
-│   │   ├── posts/      # Synced from Notion
+│   │   ├── posts/    # Synced from Notion
 │   │   ├── projects/
 │   │   └── experience/
 │   ├── layouts/
-│   │   └── Layout.astro  # Base layout with SEO
+│   │   └── Layout.astro    # Base layout with SEO
 │   ├── pages/
 │   │   ├── index.astro
 │   │   ├── about.astro
@@ -208,11 +208,15 @@ Automatically deploys to GitHub Pages on push to `main` via `.github/workflows/d
 
 ### GitHub Secrets (Settings → Secrets → Actions)
 
-- `NOTION_SECRET` - Notion integration token
+- `NOTION_SECRET`
 - `NOTION_POSTS_DB_ID`
 - `NOTION_PROJECTS_DB_ID`
 - `NOTION_EXPERIENCE_DB_ID`
 - `PUBLIC_GA_ID` (optional)
+
+### GitHub Repository Variables (Settings → Environments → github-pages → Variables)
+
+- `SITE_BASE_URL` (live URL, e.g., `https://<user>.github.io/<repo>` or your custom domain)
 
 Push to `main` triggers automatic build and deploy.
 
