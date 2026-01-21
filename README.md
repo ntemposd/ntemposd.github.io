@@ -1,6 +1,6 @@
 # ntemposd.me
 
-Personal website and blog built with [Astro](https://astro.build), syncing content from Notion databases. Features automated content management, Substack newsletter integration, and responsive design with Tailwind CSS.
+Personal website and blog built with [Astro](https://astro.build). It syncs content from Notion (posts/projects/experience), ships a Substack subscribe embed, supports dark mode with a toggle and system detection, and is deployed via GitHub Pages. Tailwind + typography handle the styling.
 
 **Live site:** [https://ntemposd.me](https://ntemposd.me)
 
@@ -49,10 +49,10 @@ NOTION_EXPERIENCE_DB_ID=your-experience-database-id
 NOTION_POSTS_DATE_PROP=Date
 NOTION_POSTS_STRICT_DATE=true
 
-# Site configuration
+# Site configuration (use your live URL; for GitHub Pages: https://<user>.github.io/<repo>)
 SITE_BASE_URL=https://ntemposd.me
 
-# Optional: Google Analytics
+# Optional: Google Analytics (only if you use GA)
 PUBLIC_GA_ID=G-XXXXXXXXXX
 ```
 
@@ -208,11 +208,11 @@ Automatically deploys to GitHub Pages on push to `main` via `.github/workflows/d
 
 ### GitHub Secrets (Settings → Secrets → Actions)
 
-- `NOTION_SECRET` - Your Notion integration token
-- `NOTION_POSTS_DB_ID` - Posts database ID
-- `NOTION_PROJECTS_DB_ID` - Projects database ID
-- `NOTION_EXPERIENCE_DB_ID` - Experience database ID
-- `PUBLIC_GA_ID` - Google Analytics ID (optional)
+- `NOTION_SECRET` - Notion integration token
+- `NOTION_POSTS_DB_ID`
+- `NOTION_PROJECTS_DB_ID`
+- `NOTION_EXPERIENCE_DB_ID`
+- `PUBLIC_GA_ID` (optional)
 
 Push to `main` triggers automatic build and deploy.
 
