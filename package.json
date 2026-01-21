@@ -12,7 +12,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "publish:substack": "tsx scripts/publish-substack-webhook.ts"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.19",

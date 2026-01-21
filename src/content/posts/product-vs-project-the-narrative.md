@@ -31,7 +31,7 @@ Let’s consider WIX. They are building a tool that allows their customers to cr
 ## **The sketch**
 
 
-![cover.png](/posts/product-vs-project-the-narrative-img1.png)
+![](/posts/product-vs-project-the-narrative-img1.png)
 
 
 ## **Product**

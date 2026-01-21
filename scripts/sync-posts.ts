@@ -13,6 +13,7 @@ const notion = new Client({ auth: process.env.NOTION_SECRET ?? process.env.NOTIO
 
 const POSTS_OUT  = path.resolve('src/content/posts');
 const ASSETS_DIR = path.resolve('src/assets/posts');
+const PUBLIC_POSTS_DIR = path.resolve('public/posts');
 
 // Optional: keep some files in content (never delete)
 const PROTECTED = new Set<string>(['_README.md']);
@@ -205,6 +206,7 @@ function pickPostDateStrict(props: any, page: any, title: string) {
 
   await ensureDir(POSTS_OUT);
   await ensureDir(ASSETS_DIR);
+  await ensureDir(PUBLIC_POSTS_DIR);
 
   // HARD CLEAN content: remove all .md/.mdx except protected
   const existing = await fs.readdir(POSTS_OUT).catch(() => [] as string[]);
@@ -230,6 +232,16 @@ function pickPostDateStrict(props: any, page: any, title: string) {
   };
 
   const n2m = new NotionToMarkdown({ notionClient: notion });
+  
+  // Custom image transformer to preserve captions
+  n2m.setCustomTransformer('image', async (block: any) => {
+    const img = block.image;
+    const url = img?.type === 'external' ? img.external?.url : img?.file?.url;
+    const caption = img?.caption ? plain(img.caption) : '';
+    if (!url) return '';
+    return caption ? `![${caption}](${url})` : `![](${url})`;
+  });
+
   const items: Item[] = [];
 
   for (const p of pages) {
@@ -288,6 +300,17 @@ function pickPostDateStrict(props: any, page: any, title: string) {
       if (u.startsWith('/posts/')) keepAssets.add(path.basename(u));
     }
   }
+  
+  // Copy assets to public/posts for dev server (avoid 404s)
+  await ensureDir(PUBLIC_POSTS_DIR);
+  for (const f of keepAssets) {
+    const src = path.join(ASSETS_DIR, f);
+    const dest = path.join(PUBLIC_POSTS_DIR, f);
+    await fs.copyFile(src, dest).catch(() => {});
+  }
+  console.log(`Copied ${keepAssets.size} asset(s) to ${PUBLIC_POSTS_DIR} for dev.`);
+
+  // Prune unused assets from src/assets/posts
   const assetFiles = await fs.readdir(ASSETS_DIR).catch(() => [] as string[]);
   let removedAssets = 0;
   for (const f of assetFiles) {
