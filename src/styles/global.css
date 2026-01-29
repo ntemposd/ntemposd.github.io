@@ -63,6 +63,15 @@ html.dark [data-no-invert] {
   border-left: 4px solid currentColor;
   font-size: 0.95rem;
   line-height: 1.6;
+  overflow-x: auto;
+}
+
+@media (max-width: 640px) {
+  .callout {
+    gap: 0.5rem;
+    padding: 0.875rem;
+    margin: 1rem 0;
+  }
 }
 
 .callout-icon {
@@ -74,8 +83,51 @@ html.dark [data-no-invert] {
   margin-top: 0.15rem;
 }
 
+@media (max-width: 640px) {
+  .callout-icon {
+    font-size: 1.1rem;
+    margin-top: 0.1rem;
+  }
+}
+
 .callout-content {
   flex: 1;
+  min-width: 0;
+  word-wrap: break-word;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.callout-content ul,
+.callout-content ol {
+  margin: 0;
+  padding-left: 1.1rem;
+  list-style-position: outside;
+  margin-bottom: 0.25rem;
+}
+
+.callout-content li {
+  margin: 0.25rem 0;
+  white-space: nowrap;
+  margin-bottom: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .callout-content {
+    font-size: 0.9rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .callout-content ul,
+  .callout-content ol {
+    margin-left: 0;
+    padding-left: 1rem;
+  }
+
+  .callout-content ul:last-child,
+  .callout-content ol:last-child {
+    margin-bottom: 0.5rem;
+  }
 }
 
 .callout-content :first-child {
@@ -98,6 +150,7 @@ html.dark [data-no-invert] {
 .callout-content a {
   color: rgb(107, 114, 128);
   font-weight: 400;
+  white-space: nowrap;
   text-decoration: underline;
   text-decoration-color: rgba(107, 114, 128, 0.3);
 }
