@@ -165,6 +165,35 @@ function replaceMarkdownUrls(md: string, mapping: Record<string, string>): strin
   return out;
 }
 
+// ---------- Transform callout blockquotes to styled HTML ----------
+function transformCallouts(md: string): string {
+  // Match blockquotes that start with emoji + text (callout pattern)
+  // Pattern: > 🌐 **Title**\n> content...
+  const calloutPattern = /^((?:> .+\n?)+)/gm;
+  
+  return md.replace(calloutPattern, (match) => {
+    const lines = match.trim().split('\n').map(line => line.replace(/^>\s?/, ''));
+    if (lines.length === 0) return match;
+    
+    // Check if first line has emoji (callout indicator)
+    const firstLine = lines[0];
+    const emojiMatch = firstLine.match(/^([\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}])\s*/u);
+    if (!emojiMatch) return match; // Not a callout, keep as blockquote
+    
+    const icon = emojiMatch[1];
+    const titleAndContent = firstLine.slice(emojiMatch[0].length);
+    
+    // Detect color/type from context (default for now)
+    const type = 'default';
+    
+    // Join all content (title + remaining lines) and keep as markdown
+    const allContent = [titleAndContent, ...lines.slice(1)].join('  \n');
+    
+    // Return markdown that will be processed by Astro
+    return `\n<aside class="callout callout-${type}"><span class="callout-icon">${icon}</span><div class="callout-content">\n\n${allContent}\n\n</div></aside>\n\n`;
+  });
+}
+
 // ---------- date picking (strict) ----------
 function pickPostDateStrict(props: any, page: any, title: string) {
   const targets = [POST_DATE_PROP, 'PublishDate', 'Publish Date', 'PublishedAt', 'Published At', 'Date', 'date'];
@@ -231,7 +260,7 @@ function pickPostDateStrict(props: any, page: any, title: string) {
     md: string;         // rewritten markdown
   };
 
-  const n2m = new NotionToMarkdown({ notionClient: notion });
+  const n2m = new NotionToMarkdown({ notionClient: notion, config: { parseChildPages: false } });
   
   // Custom image transformer to preserve captions
   n2m.setCustomTransformer('image', async (block: any) => {
@@ -264,6 +293,9 @@ function pickPostDateStrict(props: any, page: any, title: string) {
     const blocks = await n2m.pageToMarkdown(p.id);
     const mdObj: any = n2m.toMarkdownString(blocks);
     let md = typeof mdObj === 'string' ? mdObj : mdObj?.parent ?? '';
+
+    // Transform callout blockquotes to styled HTML
+    md = transformCallouts(md);
 
     // inline images in MD → download & rewrite
     const inlineUrls = collectImageUrlsFromMarkdown(md);

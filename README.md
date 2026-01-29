@@ -225,3 +225,7 @@ Push to `main` triggers automatic build and deploy.
 ## 🙋 Questions?
 
 Feel free to open an issue or reach out via [ntemposd.me](https://ntemposd.me)
+
+## 🙋 License
+
+MIT
