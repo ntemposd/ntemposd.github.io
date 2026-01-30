@@ -1,0 +1,173 @@
+---
+// Lightweight analytics banner component
+---
+
+<div id="analytics-banner" class="analytics-banner hidden">
+  <div class="analytics-content">
+    <div class="analytics-text">
+      <p>
+        I use analytics and cookies to understand how you use my website and improve your experience.
+      </p>
+    </div>
+    <div class="analytics-actions">
+      <button id="analytics-ok" class="btn-ok">OK</button>
+      <button id="analytics-close" class="btn-close">Dismiss</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .analytics-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    color: rgb(75, 85, 99);
+    padding: 1rem 1.5rem;
+    z-index: 999;
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 90vw;
+    width: fit-content;
+  }
+
+  .analytics-banner.hidden {
+    display: none;
+  }
+
+  .analytics-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .analytics-text {
+    flex: 1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .analytics-text p {
+    margin: 0;
+    color: rgb(75, 85, 99);
+  }
+
+  .analytics-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  button {
+    padding: 0.4rem 0.875rem;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+  }
+
+  .btn-ok {
+    background-color: rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+  }
+
+  .btn-ok:hover {
+    background-color: rgb(209, 213, 219);
+  }
+
+  .btn-close {
+    background-color: rgb(243, 244, 246);
+    color: rgb(75, 85, 99);
+    border: none;
+  }
+
+  .btn-close:hover {
+    background-color: rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+  }
+
+  @media (max-width: 768px) {
+    .analytics-banner {
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      transform: none;
+      max-width: none;
+    }
+
+    .analytics-content {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .analytics-text {
+      font-size: 0.85rem;
+    }
+
+    .analytics-actions {
+      width: 100%;
+    }
+
+    .analytics-actions button {
+      flex: 1;
+    }
+  }
+
+  /* Dark mode - invert filter compat */
+  html.dark .analytics-banner {
+    background: rgb(31, 41, 55);
+    color: rgb(209, 213, 219);
+    border-color: rgba(255, 255, 255, 0.1);
+    filter: invert(1) hue-rotate(180deg) contrast(0.99);
+  }
+
+  html.dark .analytics-text p {
+    color: rgb(209, 213, 219);
+  }
+
+  html.dark .btn-ok,
+  html.dark .btn-close {
+    filter: invert(1) hue-rotate(180deg) contrast(0.99);
+  }
+</style>
+
+<script>
+  // Check if user has already dismissed the banner
+  function initAnalyticsBanner() {
+    const STORAGE_KEY = 'analytics-banner-acknowledged';
+    const banner = document.getElementById('analytics-banner');
+    const okButton = document.getElementById('analytics-ok');
+    const closeButton = document.getElementById('analytics-close');
+
+    // Only show if user hasn't acknowledged preferences before
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      banner?.classList.remove('hidden');
+    }
+
+    // Handle OK button - saves preference to localStorage
+    okButton?.addEventListener('click', () => {
+      localStorage.setItem(STORAGE_KEY, 'true');
+      banner?.classList.add('hidden');
+    });
+
+    // Handle Dismiss button - just hides until next refresh
+    closeButton?.addEventListener('click', () => {
+      banner?.classList.add('hidden');
+    });
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAnalyticsBanner);
+  } else {
+    initAnalyticsBanner();
+  }
+</script>

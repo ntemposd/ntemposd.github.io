@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'; // ✅ Astro-native global CSS import
+import AnalyticsBanner from '../components/AnalyticsBanner.astro';
 const GA_ID = import.meta.env.PUBLIC_GA_ID;
 
 const {
@@ -86,6 +87,9 @@ const ogDesc = entry?.data?.excerpt ?? description;
   <body class="bg-white text-gray-900">
     <!-- Dotted background overlay -->
     <div class="dots-overlay" aria-hidden="true"></div>
+
+    <!-- Analytics Banner -->
+    <AnalyticsBanner />
 
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-gray-200">
