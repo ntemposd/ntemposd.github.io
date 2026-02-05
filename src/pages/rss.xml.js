@@ -16,6 +16,13 @@ export async function GET(context) {
   );
 
   const toAbsolute = (url) => new URL(url, context.site).toString();
+  const escapeHtml = (value) =>
+    String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
   const resolveImageUrl = (raw) => {
     if (typeof raw !== 'string' || raw.length === 0) return null;
     if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
@@ -47,15 +54,23 @@ export async function GET(context) {
 
       const absoluteLink = toAbsolute(`/writing/${post.slug}/`);
 
+      const mediaType = type ?? 'image/jpeg';
       const mediaCustomData = imageUrl
-        ? `<media:content url="${imageUrl}" medium="image" />` +
+        ? `<media:content url="${imageUrl}" medium="image" type="${mediaType}" />` +
           `<media:thumbnail url="${imageUrl}" />`
         : '';
+
+      const safeTitle = escapeHtml(post.data.title);
+      const safeExcerpt = escapeHtml(post.data.excerpt ?? '');
+      const descriptionHtml =
+        (imageUrl ? `<p><img src="${imageUrl}" alt="${safeTitle}" /></p>` : '') +
+        (safeExcerpt ? `<p>${safeExcerpt}</p>` : '') +
+        `<p><a href="${absoluteLink}">Read on ntemposd.me</a></p>`;
 
       return {
         title: post.data.title,
         pubDate: new Date(post.data.date),
-        description: post.data.excerpt ?? '',
+        description: descriptionHtml,
         link: absoluteLink,
         customData: mediaCustomData,
         enclosure:
