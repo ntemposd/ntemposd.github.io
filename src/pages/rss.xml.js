@@ -70,15 +70,19 @@ export async function GET(context) {
           `<media:thumbnail url="${imageUrl}" />`
         : '';
 
-      const safeExcerpt = escapeHtml(toFixedChars(post.data.excerpt ?? '', EXCERPT_MAX_CHARS));
-      const descriptionHtml =
+      const fixedExcerpt = toFixedChars(post.data.excerpt ?? '', EXCERPT_MAX_CHARS);
+      const safeExcerpt = escapeHtml(fixedExcerpt);
+      const contentHtml =
         (safeExcerpt ? `<p>${safeExcerpt}</p>` : '') +
         `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`;
 
       return {
         title: post.data.title,
         pubDate: new Date(post.data.date),
-        description: descriptionHtml,
+        // Keep card/list previews deterministic: plain text, fixed length.
+        description: fixedExcerpt,
+        // Keep post body formatting separate from preview text.
+        content: contentHtml,
         link: absoluteLink,
         customData: mediaCustomData,
         enclosure:
