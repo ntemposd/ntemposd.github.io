@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 
 export async function GET(context) {
   const posts = await getCollection('posts');
-  const EXCERPT_MAX_CHARS = 220;
+  const CARD_EXCERPT_MAX_CHARS = 120;
 
   const assetUrls = import.meta.glob('../../assets/posts/**/*.{png,jpg,jpeg,webp,avif,svg}', {
     eager: true,
@@ -33,12 +33,18 @@ export async function GET(context) {
     const clipped = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
     return `${clipped}...`;
   };
-  const flattenSentenceStops = (text) =>
-    text
-      .replace(/[.!?]+/g, ' -')
-      .replace(/\s*-\s*/g, ' - ')
-      .replace(/\s+/g, ' ')
-      .trim();
+  const extractFirstHeading = (markdown) => {
+    if (typeof markdown !== 'string' || markdown.length === 0) return '';
+    const lines = markdown.split('\n');
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      if (/^#{1,6}\s+/.test(line)) {
+        return line.replace(/^#{1,6}\s+/, '').replace(/\*\*/g, '').trim();
+      }
+    }
+    return '';
+  };
   const extractFirstParagraph = (markdown) => {
     if (typeof markdown !== 'string' || markdown.length === 0) return '';
     const lines = markdown.split('\n');
@@ -96,20 +102,27 @@ export async function GET(context) {
           `<media:thumbnail url="${imageUrl}" />`
         : '';
 
-      const fixedExcerpt = toFixedChars(post.data.excerpt ?? '', EXCERPT_MAX_CHARS);
-      const previewText = flattenSentenceStops(fixedExcerpt);
+      const fullExcerpt = String(post.data.excerpt ?? '').replace(/\s+/g, ' ').trim();
+      const fixedExcerpt = toFixedChars(fullExcerpt, CARD_EXCERPT_MAX_CHARS);
+      const firstTitle = extractFirstHeading(post.body ?? '');
       const firstParagraph = extractFirstParagraph(post.body ?? '');
-      const bodySnippet = firstParagraph || fixedExcerpt;
-      const safeBodySnippet = escapeHtml(bodySnippet);
-      const contentHtml =
-        (safeBodySnippet ? `<p>${safeBodySnippet}</p>` : '') +
-        `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`;
+      const safeExcerpt = escapeHtml(fullExcerpt || fixedExcerpt);
+      const safeTitle = escapeHtml(firstTitle);
+      const safeParagraph = escapeHtml(firstParagraph);
+      const contentHtmlParts = [
+        safeExcerpt ? `<p>${safeExcerpt}</p>` : '',
+        imageUrl ? `<p><img src="${imageUrl}" alt="${escapeHtml(post.data.title)}" /></p>` : '',
+        safeTitle ? `<h2>${safeTitle}</h2>` : '',
+        safeParagraph ? `<p>${safeParagraph}</p>` : '',
+        `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`,
+      ];
+      const contentHtml = contentHtmlParts.filter(Boolean).join('');
 
       return {
         title: post.data.title,
         pubDate: new Date(post.data.date),
         // Keep card/list previews deterministic: plain text, fixed length.
-        description: previewText,
+        description: fixedExcerpt,
         // Keep post body formatting separate from preview text.
         content: contentHtml,
         link: absoluteLink,
