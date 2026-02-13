@@ -33,6 +33,32 @@ export async function GET(context) {
     const clipped = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
     return `${clipped}...`;
   };
+  const flattenSentenceStops = (text) =>
+    text
+      .replace(/[.!?]+/g, ' -')
+      .replace(/\s*-\s*/g, ' - ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  const extractFirstParagraph = (markdown) => {
+    if (typeof markdown !== 'string' || markdown.length === 0) return '';
+    const lines = markdown.split('\n');
+    const paragraphLines = [];
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) {
+        if (paragraphLines.length > 0) break;
+        continue;
+      }
+      // Skip common non-paragraph markdown blocks at the top.
+      if (/^#{1,6}\s/.test(line)) continue;
+      if (/^!\[.*\]\(.*\)/.test(line)) continue;
+      if (/^>\s?/.test(line)) continue;
+      if (/^(-|\*|\+)\s/.test(line)) continue;
+      if (/^\d+\.\s/.test(line)) continue;
+      paragraphLines.push(line);
+    }
+    return paragraphLines.join(' ').replace(/\s+/g, ' ').trim();
+  };
   const resolveImageUrl = (raw) => {
     if (typeof raw !== 'string' || raw.length === 0) return null;
     if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
@@ -71,16 +97,19 @@ export async function GET(context) {
         : '';
 
       const fixedExcerpt = toFixedChars(post.data.excerpt ?? '', EXCERPT_MAX_CHARS);
-      const safeExcerpt = escapeHtml(fixedExcerpt);
+      const previewText = flattenSentenceStops(fixedExcerpt);
+      const firstParagraph = extractFirstParagraph(post.body ?? '');
+      const bodySnippet = firstParagraph || fixedExcerpt;
+      const safeBodySnippet = escapeHtml(bodySnippet);
       const contentHtml =
-        (safeExcerpt ? `<p>${safeExcerpt}</p>` : '') +
+        (safeBodySnippet ? `<p>${safeBodySnippet}</p>` : '') +
         `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`;
 
       return {
         title: post.data.title,
         pubDate: new Date(post.data.date),
         // Keep card/list previews deterministic: plain text, fixed length.
-        description: fixedExcerpt,
+        description: previewText,
         // Keep post body formatting separate from preview text.
         content: contentHtml,
         link: absoluteLink,
