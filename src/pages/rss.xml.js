@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 
 export async function GET(context) {
   const posts = await getCollection('posts');
+  const EXCERPT_MAX_CHARS = 220;
 
   const assetUrls = import.meta.glob('../../assets/posts/**/*.{png,jpg,jpeg,webp,avif,svg}', {
     eager: true,
@@ -23,6 +24,15 @@ export async function GET(context) {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
+  const toFixedChars = (text, maxChars) => {
+    if (typeof text !== 'string' || text.length === 0) return '';
+    const cleaned = text.replace(/\s+/g, ' ').trim();
+    if (cleaned.length <= maxChars) return cleaned;
+    const slice = cleaned.slice(0, maxChars);
+    const lastSpace = slice.lastIndexOf(' ');
+    const clipped = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
+    return `${clipped}...`;
+  };
   const resolveImageUrl = (raw) => {
     if (typeof raw !== 'string' || raw.length === 0) return null;
     if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
@@ -60,12 +70,10 @@ export async function GET(context) {
           `<media:thumbnail url="${imageUrl}" />`
         : '';
 
-      const safeTitle = escapeHtml(post.data.title);
-      const safeExcerpt = escapeHtml(post.data.excerpt ?? '');
+      const safeExcerpt = escapeHtml(toFixedChars(post.data.excerpt ?? '', EXCERPT_MAX_CHARS));
       const descriptionHtml =
-        (imageUrl ? `<p><img src="${imageUrl}" alt="${safeTitle}" /></p>` : '') +
         (safeExcerpt ? `<p>${safeExcerpt}</p>` : '') +
-        `<p><a href="${absoluteLink}">Read on ntemposd.me</a></p>`;
+        `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`;
 
       return {
         title: post.data.title,
