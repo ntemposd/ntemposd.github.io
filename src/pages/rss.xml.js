@@ -33,6 +33,13 @@ export async function GET(context) {
     const clipped = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
     return `${clipped}...`;
   };
+  // Substack card previews often truncate at ASCII sentence stops.
+  // Keep punctuation visually while avoiding early sentence clipping.
+  const toSubstackCardSafeText = (text) =>
+    String(text)
+      .replace(/\./g, '．')
+      .replace(/!/g, '！')
+      .replace(/\?/g, '？');
   const extractFirstHeading = (markdown) => {
     if (typeof markdown !== 'string' || markdown.length === 0) return '';
     const lines = markdown.split('\n');
@@ -104,6 +111,7 @@ export async function GET(context) {
 
       const fullExcerpt = String(post.data.excerpt ?? '').replace(/\s+/g, ' ').trim();
       const fixedExcerpt = toFixedChars(fullExcerpt, CARD_EXCERPT_MAX_CHARS);
+      const cardExcerpt = toSubstackCardSafeText(fixedExcerpt);
       const firstTitle = extractFirstHeading(post.body ?? '');
       const firstParagraph = extractFirstParagraph(post.body ?? '');
       const safeExcerpt = escapeHtml(fullExcerpt || fixedExcerpt);
@@ -122,7 +130,7 @@ export async function GET(context) {
         title: post.data.title,
         pubDate: new Date(post.data.date),
         // Keep card/list previews deterministic: plain text, fixed length.
-        description: fixedExcerpt,
+        description: cardExcerpt,
         // Keep post body formatting separate from preview text.
         content: contentHtml,
         link: absoluteLink,

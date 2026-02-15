@@ -163,6 +163,80 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
     </div>
   </section>
 
+  <!-- Latest Writing -->
+  <section class="mt-4">
+    <h2 class="text-2xl font-bold mb-3">Writing</h2>
+    <p class="text-gray-700 mb-6 max-w-3xl">
+      Latest posts — I occasionally write posts but my notepads and my posts backlog is full.
+    </p>
+
+    {posts.length ? (
+      <div class="grid md:grid-cols-3 gap-6">
+        {posts.map((p, i) => {
+          const gIdx = cardGlobalIndex('posts', i);
+          const date = (p.data.date instanceof Date ? p.data.date : new Date(p.data.date)).toISOString().split('T')[0];
+          const coverPath = (p.data.image ?? p.data.cover) as string | undefined;
+          const resolved = resolveLocal(coverPath);
+
+          return (
+            <a
+              href={`/writing/${p.slug}/`}
+              class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
+                     shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            >
+              <div data-no-invert class="aspect-[6/3] overflow-hidden bg-gray-50">
+                {resolved ? (
+                  resolved.isSvg ? (
+                    <img
+                      src={resolved.asset}
+                      alt={p.data.title ?? 'Post cover'}
+                      loading={eagerForIndex(gIdx)}
+                      fetchpriority={priorityForIndex(gIdx)}
+                      decoding="async"
+                      class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                    />
+                  ) : (
+                    <Image
+                      src={resolved.asset}
+                      alt={p.data.title ?? 'Post cover'}
+                      widths={CARD_WIDTHS}
+                      sizes={CARD_SIZES}
+                      loading={eagerForIndex(gIdx)}
+                      fetchpriority={priorityForIndex(gIdx)}
+                      decoding="async"
+                      class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                    />
+                  )
+                ) : (
+                  <div class="w-full h-full grid place-items-center text-gray-400 text-sm">No cover</div>
+                )}
+              </div>
+
+              <div class="p-5">
+                <h3 class="text-lg font-semibold mb-1">{p.data.title}</h3>
+                <p class="text-xs text-gray-500 mb-2">{date}</p>
+                {p.data.excerpt && (
+                  <p class="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">{p.data.excerpt}</p>
+                )}
+                <span class="mt-2 inline-block text-sm underline">Read more →</span>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    ) : (
+      <p class="text-gray-500">No posts yet --- coming soon.</p>
+    )}
+
+    <div class="mt-6 flex justify-end">
+      <a href="/writing" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+                 bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
+                 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+        View all posts →
+      </a>
+    </div>
+  </section>
+  
   <!-- Projects -->
   <section id="projects" class="mt-4">
     <h2 class="text-2xl font-bold mb-3">Projects</h2>
@@ -241,77 +315,4 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
     </div>
   </section>
 
-  <!-- Latest Writing -->
-  <section class="mt-4">
-    <h2 class="text-2xl font-bold mb-3">Writing</h2>
-    <p class="text-gray-700 mb-6 max-w-3xl">
-      Latest posts — I occasionally write posts but my notepads and my posts backlog is full.
-    </p>
-
-    {posts.length ? (
-      <div class="grid md:grid-cols-3 gap-6">
-        {posts.map((p, i) => {
-          const gIdx = cardGlobalIndex('posts', i);
-          const date = (p.data.date instanceof Date ? p.data.date : new Date(p.data.date)).toISOString().split('T')[0];
-          const coverPath = (p.data.image ?? p.data.cover) as string | undefined;
-          const resolved = resolveLocal(coverPath);
-
-          return (
-            <a
-              href={`/writing/${p.slug}/`}
-              class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
-                     shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-            >
-              <div data-no-invert class="aspect-[6/3] overflow-hidden bg-gray-50">
-                {resolved ? (
-                  resolved.isSvg ? (
-                    <img
-                      src={resolved.asset}
-                      alt={p.data.title ?? 'Post cover'}
-                      loading={eagerForIndex(gIdx)}
-                      fetchpriority={priorityForIndex(gIdx)}
-                      decoding="async"
-                      class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
-                    />
-                  ) : (
-                    <Image
-                      src={resolved.asset}
-                      alt={p.data.title ?? 'Post cover'}
-                      widths={CARD_WIDTHS}
-                      sizes={CARD_SIZES}
-                      loading={eagerForIndex(gIdx)}
-                      fetchpriority={priorityForIndex(gIdx)}
-                      decoding="async"
-                      class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
-                    />
-                  )
-                ) : (
-                  <div class="w-full h-full grid place-items-center text-gray-400 text-sm">No cover</div>
-                )}
-              </div>
-
-              <div class="p-5">
-                <h3 class="text-lg font-semibold mb-1">{p.data.title}</h3>
-                <p class="text-xs text-gray-500 mb-2">{date}</p>
-                {p.data.excerpt && (
-                  <p class="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">{p.data.excerpt}</p>
-                )}
-                <span class="mt-2 inline-block text-sm underline">Read more →</span>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    ) : (
-      <p class="text-gray-500">No posts yet --- coming soon.</p>
-    )}
-
-    <div class="mt-6 flex justify-end">
-      <a href="/writing" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
-                 bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
-                 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
-        View all posts →
-      </a>
-    </div>
-  </section>
 </Layout>
