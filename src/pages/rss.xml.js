@@ -33,13 +33,14 @@ export async function GET(context) {
     const clipped = lastSpace > 0 ? slice.slice(0, lastSpace) : slice;
     return `${clipped}...`;
   };
-  // Substack card previews often truncate at ASCII sentence stops.
-  // Keep punctuation visually while avoiding early sentence clipping.
-  const toSubstackCardSafeText = (text) =>
+  // Substack cards often stop at ASCII sentence stops (., !, ?).
+  // Keep text readable by swapping sentence stops to a neutral separator
+  // only for the card preview field.
+  const toSubstackCardPreview = (text) =>
     String(text)
-      .replace(/\./g, '．')
-      .replace(/!/g, '！')
-      .replace(/\?/g, '？');
+      .replace(/\s*[.!?]+\s+/g, ' | ')
+      .replace(/\s+/g, ' ')
+      .trim();
   const extractFirstHeading = (markdown) => {
     if (typeof markdown !== 'string' || markdown.length === 0) return '';
     const lines = markdown.split('\n');
@@ -91,27 +92,11 @@ export async function GET(context) {
       const rawImage = post.data.image ?? post.data.cover ?? null;
       const imageUrl = resolveImageUrl(rawImage);
 
-      const ext = typeof rawImage === 'string' ? rawImage.split('.').pop()?.toLowerCase() : null;
-      const type =
-        ext === 'png' ? 'image/png'
-        : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg'
-        : ext === 'gif' ? 'image/gif'
-        : ext === 'webp' ? 'image/webp'
-        : ext === 'avif' ? 'image/avif'
-        : ext === 'svg' ? 'image/svg+xml'
-        : null;
-
       const absoluteLink = toAbsolute(`/writing/${post.slug}/`);
-
-      const mediaType = type ?? 'image/jpeg';
-      const mediaCustomData = imageUrl
-        ? `<media:content url="${imageUrl}" medium="image" type="${mediaType}" />` +
-          `<media:thumbnail url="${imageUrl}" />`
-        : '';
 
       const fullExcerpt = String(post.data.excerpt ?? '').replace(/\s+/g, ' ').trim();
       const fixedExcerpt = toFixedChars(fullExcerpt, CARD_EXCERPT_MAX_CHARS);
-      const cardExcerpt = toSubstackCardSafeText(fixedExcerpt);
+      const cardExcerpt = toSubstackCardPreview(fixedExcerpt);
       const firstTitle = extractFirstHeading(post.body ?? '');
       const firstParagraph = extractFirstParagraph(post.body ?? '');
       const safeExcerpt = escapeHtml(fullExcerpt || fixedExcerpt);
@@ -134,15 +119,6 @@ export async function GET(context) {
         // Keep post body formatting separate from preview text.
         content: contentHtml,
         link: absoluteLink,
-        customData: mediaCustomData,
-        enclosure:
-          imageUrl && type
-            ? {
-                url: imageUrl,
-                length: 0,
-                type,
-              }
-            : undefined,
       };
     });
 
@@ -150,9 +126,6 @@ export async function GET(context) {
     title: 'ntemposd.me',
     description: 'Thoughts on product, tech, and building things',
     site: context.site,
-    xmlns: {
-      media: 'http://search.yahoo.com/mrss/',
-    },
     items,
   });
 }
