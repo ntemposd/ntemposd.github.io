@@ -104,7 +104,6 @@ export async function GET(context) {
       const safeParagraph = escapeHtml(firstParagraph);
       const contentHtmlParts = [
         safeExcerpt ? `<p>${safeExcerpt}</p>` : '',
-        imageUrl ? `<p><img src="${imageUrl}" alt="${escapeHtml(post.data.title)}" /></p>` : '',
         safeTitle ? `<h2>${safeTitle}</h2>` : '',
         safeParagraph ? `<p>${safeParagraph}</p>` : '',
         `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`,
@@ -129,3 +128,4 @@ export async function GET(context) {
     items,
   });
 }
+

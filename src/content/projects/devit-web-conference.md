@@ -1,6 +1,6 @@
 ---
 title: "DEVit Web Conference"
-blurb: "An international 360° Web Development Conference for local techies"
+blurb: "An international 360° Web Development Conference for local techies."
 tags: ["Community", "Web"]
 link: "https://github.com/skgtech/devit"
 image: "/projects/devit-web-conference.webp"

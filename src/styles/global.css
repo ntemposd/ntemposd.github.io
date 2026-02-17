@@ -219,3 +219,30 @@ html.dark .callout-default {
   background-color: rgba(107, 114, 128, 0.15);
   color: rgb(209, 213, 219);
 }
+
+/* Notion column_list / column support (synced as HTML wrappers) */
+.notion-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.notion-column {
+  min-width: 0;
+}
+
+.notion-column > :first-child {
+  margin-top: 0;
+}
+
+.notion-column > :last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .notion-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+  }
+}

@@ -1,6 +1,6 @@
 ---
 title: "Startup Weekend Thessaloniki"
-blurb: "Entrepreneurship hackathons where developers, designers, marketers, product managers, startup enthusiasts come together."
+blurb: "Entrepreneurship hackathon where developers, designers, marketers, product managers, startup enthusiasts come together."
 tags: ["Community", "Startups", "Education"]
 link: "https://www.facebook.com/swthessaloniki"
 image: "/projects/startup-weekend-thessaloniki.webp"
