@@ -1,6 +1,6 @@
 ---
 title: "Startup Live Thessaloniki"
-blurb: "Entrepreneurship hackathons where developers, designers, marketers, product managers, startup enthusiasts come together."
+blurb: "36-hours high energy brainstorming event, with mentor huddles and pitches aimed at launching new ventures."
 tags: ["Community", "Startups", "Education"]
 link: "https://www.facebook.com/startuplivethessaloniki"
 image: "/projects/startup-live-thessaloniki.webp"

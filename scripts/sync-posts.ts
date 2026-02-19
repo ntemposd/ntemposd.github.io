@@ -271,6 +271,21 @@ function pickPostDateStrict(props: any, page: any, title: string) {
     return caption ? `![${caption}](${url})` : `![](${url})`;
   });
 
+  // Render Notion column layouts as responsive HTML containers instead of flattening.
+  n2m.setCustomTransformer('column', async (block: any) => {
+    const children = await n2m.pageToMarkdown(block.id);
+    const mdObj: any = n2m.toMarkdownString(children);
+    const inner = (typeof mdObj === 'string' ? mdObj : mdObj?.parent ?? '').trim();
+    return `\n<div class="notion-column">\n\n${inner}\n\n</div>\n`;
+  });
+
+  n2m.setCustomTransformer('column_list', async (block: any) => {
+    const children = await n2m.pageToMarkdown(block.id);
+    const mdObj: any = n2m.toMarkdownString(children);
+    const inner = (typeof mdObj === 'string' ? mdObj : mdObj?.parent ?? '').trim();
+    return `\n<div class="notion-columns">\n\n${inner}\n\n</div>\n`;
+  });
+
   const items: Item[] = [];
 
   for (const p of pages) {
