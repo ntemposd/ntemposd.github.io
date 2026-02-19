@@ -31,9 +31,9 @@ In this case, the executive team approved a new feature: **dynamic pricing based
 
 - How often do hosts manually change prices?
 - Do price changes correlate with higher bookings or revenue?
-- What tools they already using?
-- Is this about control problem or a confidence problem?
-- What do power users look at differently compared to casual hosts?
+- What tools they already using to calculate the prices?
+- Is this a control problem or a confidence problem?
+- Do power users behave differently from casual hosts?
 
 The answers tend to narrow the problem. Not everyone needed “dynamic pricing.” Some hosts were already adjusting prices manually. Others weren’t touching them at all. So the question slowly shifted from “build dynamic pricing” to “what exactly are we helping with?”
 
@@ -125,201 +125,76 @@ Once goals and metrics are aligned, the development team translates the idea int
 ## When the Booking Funnel Drops
 
 
-The second scenario was about declining bookings and user complaints that the flow feels cumbersome.
+In this case, bookings were declining and users were describing the flow as “cumbersome”. That word alone can easily justify a redesign discussion. But before redesigning anything, I prefer to locate the friction. First we define the flow clearly: Listing View → Checkout → Payment → Confirmation. If something is off, it usually happens somewhere specific.
 
 
-When I hear “cumbersome,” I don’t redesign immediately.
+### I Look at the Signals
 
 
-I look for where friction actually lives.
+I start with the conversion rate by step, segmented by device, country, and acquisition source. Then I look deeper: time to complete, payment error rate, core web vitals. If available, session replays and heatmaps help connect numbers to behavior. If volume exists, the data tends to narrow the issue.
+If it doesn’t, I rely more on qualitative input. Five to ten conversations with recent bookers and recent abandoners are usually enough. Support tickets often add context. Sometimes a simple post-abandonment “What stopped you today?” email provides more clarity than a redesign workshop.
 
 
-I start with the funnel:
+### I Benchmark  Competitors
 
 
-Listing → Checkout → Payment → Confirmation.
+At the same time, I review competitor funnels. Not to replicate them, but to understand where we might be missing something. I capture screenshots, record short flows, and compare them across a few basic dimensions 
 
 
-Then I break it down:
-
-- Drop-off by step
-- Device breakdown
-- Time to complete
-- Payment error rate
-- Core Web Vitals
-- Replays or heatmaps if available
-
-If volume exists, data usually points somewhere very specific.
+| Criteria (Score 1-5)   | Our App | Competitor A | Competitor B | Competitor C |
+| ---------------------- | ------- | ------------ | ------------ | ------------ |
+| **Steps & friction**   |         |              |              |              |
+| **Price clarity**      |         |              |              |              |
+| **Sense of trust**     |         |              |              |              |
+| **Payment experience** |         |              |              |              |
+| **UX & performance**   |         |              |              |              |
 
 
-If volume is limited, I lean more into qualitative signals.
-
-
----
-
-
-### I Talk to Users
-
-
-5–10 interviews are usually enough.
-
-
-Recent bookers.
-
-
-Recent abandoners.
-
-
-Support tickets are often brutally honest.
-
-
-Sometimes a simple post-abandonment email asking
-
-
-“What stopped you today?”
-
-
-reveals more than a full redesign workshop.
-
-
----
-
-
-### I Benchmark Without Romanticizing Competitors
-
-
-When I look at competitors, I try to be structured:
-
-- How many steps?
-- When do fees appear?
-- Is guest checkout allowed?
-- What payment methods exist?
-- Can I retry payment without losing data?
-- What trust signals appear at key moments?
-
-I take screenshots.
-
-
-Short recordings.
-
-
-Not to copy them — but to remove blind spots in our own flow.
-
-
-Most booking funnels don’t need innovation.
-
-
-They need friction removed.
-
-
----
+Explaining the table’s criteria, I look at the number of steps and the field count. Whether guest checkout exists. How clearly cancellation terms and fees are presented. What trust signals are visible. Which payment methods and currencies are supported, how errors are handled, and whether performance or accessibility might be adding unnecessary cognitive load. Most booking funnels don’t require innovation. They require friction to be removed.
 
 
 ## When Delivery Slips
 
 
-The third scenario was about Agile delays.
-
-
-When deadlines slip repeatedly, my default assumption is:
-
-
-The system needs tuning.
-
-
-Not the people.
-
-
-So I try to make delays visible.
-
-
----
+The third scenario was about Agile delays. This is not my job per se, this should be done by an Agile Coach or a Scrum master, but I accepted the challenge. It was consulting after all. To my experience most of the companies out there are doing Agile wrong not intentionally but because they don’t have the required patience to let the system flourish. Agile to me is a set of principles not a dogma. When deadlines slip repeatedly, my default assumption is: The system needs fine tuning. Not the people, they are over processes according to the Agile Manifesto anyways. So I try to make the delay reasons visible.
 
 
 ### I Start With Baselines
 
 
-Before changing process, I want to see:
-
-- Lead time
-- Cycle time
-- Predictability (% delivered vs committed)
-- Blocked time
-- Reopened tickets
-- Context switching
-
-Without a baseline, improvement conversations become subjective.
+Before changing anything, we should run a “Where do we lose time and why?” working session with with the team, tech and delivery leads shoulds be there to report metrics and how do they measure them. Without the baselines, improvement conversations become subjective. The outcome of the session should be an agreement on 2-3 measurable goals, and an experiment framework that measures changes.
 
 
----
+**Metrics in the microscope**
 
-
-### I Narrow Focus
-
-
-I don’t try to fix everything.
-
-
-I usually align with the team on 2–3 measurable goals.
-
-
-For example:
-
-- Reduce cycle time
-- Improve predictability
-- Reduce rework
-
-Then we experiment.
-
-
-One improvement at a time.
-
-
-Measure impact.
-
-
-Keep or adjust.
-
-
----
-
+- Time to delivery (Lead time + Cycle time)
+- Predictability (% Delivered vs Committed)
+- Blocked time (Waiting for dependencies)
+- Rework rate (Tickets reopened after delivery)
+- Context switching (Too much WIP = Slower delivery)
 
 ### My Bias Toward Clarity and Focus Protection
 
 
-A few patterns I’ve seen repeatedly:
+A few patterns I’ve seen repeatedly: Unclear tickets slow everything down, this is not Product work alone, the team should find a rythm on this one, some teams prefer basic ticket content some others prefer it in detail, if you are agile enough a basic ticket is okay and the subtickets should get the job done. Too much parallel work kills flow. Yes that’s true it takes focus to work on a ticket and if let’s say a ticket is 2 hours, 2 parallel tickets of 2 hours each make more than 4 hours for sure. Mid-sprint scope changes destroy predictability. Yes even if we say we do Scrum and our sprint is 2 weeks, I’ve seen cases where a customer jumps in and asks something for tomorrow. 
 
-- Unclear tickets slow everything down
-- Too much parallel work kills flow
-- Mid-sprint scope changes destroy predictability
 
-So I tend to push for:
+**So I tend to advocate for**
 
-- A clear Definition of Ready
+- A clear Definition of Ready (Let the team to decide this one)
 - Weekly refinement with engineering and design
 - WIP limits
 - Capacity-aware planning
-- A Definition of Done that includes tests, analytics, and release notes
+- A Definition of Done that includes tests, tracking, and release notes
+- Small releases and progressive rollout.
 
-Small releases.
-
-
-Progressive rollout.
+### Stakeholder Alignment Is a System
 
 
-I prefer boring consistency over heroic sprints.
+One thing that has worked well for me is a lightweight product newsletter. So if delivery slips it might be because someone perceived it as slip because they were not aware of the context. Adding all stakeholders into this email list which is sent out and adjusted according to the needs. Nothing flashy, just clarity. When stakeholders know where things stand, noise decreases and delivery improves.
 
 
----
-
-
-## Stakeholder Alignment Is a System
-
-
-One thing that has worked well for me is a lightweight product newsletter.
-
-
-Every two weeks:
+**What the email includes**
 
 - Now / Next / Later
 - Key risks
@@ -327,22 +202,7 @@ Every two weeks:
 - Initiative status (Green / Orange / Red)
 - Links to PRDs and decision logs
 
-Nothing flashy.
-
-
-Just clarity.
-
-
-When stakeholders know where things stand, noise decreases.
-
-
-And when noise decreases, delivery improves.
-
-
----
-
-
-## What All Three Scenarios Have in Common
+## Epilogue
 
 
 Whether it’s dynamic pricing, a broken funnel, or delivery delays, my approach doesn’t change much.
