@@ -1,6 +1,6 @@
 ---
 title: "Startup Live Thessaloniki"
-blurb: "36-hours high energy brainstorming event, with mentor huddles and pitches aimed at launching new ventures."
+blurb: "Executed a 36-hour venture-building event integrating mentor sessions, structured validation, and pitch evaluation."
 tags: ["Community", "Startups", "Education"]
 link: "https://www.facebook.com/startuplivethessaloniki"
 image: "/projects/startup-live-thessaloniki.webp"

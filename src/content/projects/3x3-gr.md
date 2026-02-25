@@ -1,6 +1,6 @@
 ---
 title: "3x3.gr"
-blurb: "Online management tool for organizing and promoting 3-on-3 street basketball tournaments."
+blurb: "Digital operations platform streamlining tournament management, registrations, and promotion for 3x3 basketball events."
 tags: ["Next.js", "Stripe", "Backoffice"]
 link: "http://www.3x3.gr/"
 image: "/projects/3x3-gr.webp"

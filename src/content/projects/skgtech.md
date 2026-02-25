@@ -1,6 +1,6 @@
 ---
 title: "SKGTech"
-blurb: "A vibrant community of developers, designers, product people and entrepreneurs."
+blurb: "Co-founded and grew a regional tech NGO facilitating structured knowledge exchange across disciplines."
 tags: ["Community", "NGO"]
 link: "https://github.com/skgtech/skgtech.github.io"
 image: "/projects/skgtech.webp"

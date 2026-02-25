@@ -106,7 +106,7 @@ Frankly speaking, Thessaloniki is the city where you can develop your product wi
 [**OKthess**](http://www.okthess.gr/), a space for early stage entrepreneurs where you can get further advice on your idea, business model and funding opportunities is in the building. Apart from that, Thessaloniki is small and connected. So the best place to seek for advice is the community itself. People can guide you to the right meetup, person and/or place. You could also join the pages mentioned above but what it works in Thessaloniki better is the word of mouth channel.
 
 
-You’d like something more specific eh? [**SKGTech**](http://skgtech.io/) people got you covered! They have already created a 250+ people Slack community. Get your [**personal invitation**](http://skgtech.io/#slack-invite), explore the channels and get me online to ask for more information.
+You’d like something more specific eh? [**SKGTech**](http://skgtech.io/) people got you covered! They have already created a 250+ people Slack community. Join them, explore the channels and get me online to ask for more information.
 
 
 Ready for Thessaloniki?

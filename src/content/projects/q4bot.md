@@ -1,6 +1,6 @@
 ---
 title: "Q4Bot"
-blurb: "Introducing Q4I — an advanced metric for analyzing clutch performances in basketball."
+blurb: "Introduced Q4I, a proprietary clutch-performance metric analyzing late-game decision impact in basketball."
 tags: ["Flask", "SQLite", "Stripe", "Vercel"]
 link: "https://q4bot.vercel.app/"
 image: "/projects/q4bot.webp"

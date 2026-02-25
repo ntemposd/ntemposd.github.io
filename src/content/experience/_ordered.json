@@ -4,7 +4,7 @@
     "role": "Senior Product Manager",
     "start": "2023-12-01",
     "end": null,
-    "current": true,
+    "current": false,
     "location": "Remote",
     "summary": "Driving automation and scalability in business operations. Building  internal tools for real-time Income Statement, Cash Flow, and Expense Tracking, backed by ERP integrations and Bank APIs.",
     "tags": [

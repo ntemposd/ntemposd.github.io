@@ -28,12 +28,6 @@ Let’s consider WIX. They are building a tool that allows their customers to cr
 **Product development** is usually subject to a repetitive development routine, from ideation to testing and launch. It outputs increments and adds on existing working software, adding new releases while continuously integrating new product functionality and fixes fed by various customer and non-customer requests. On the other hand, **project development** is usually pre-planned on static requests and milestones as part of a negotiated contract. You might see many more unsupported projects than products out there, mainly because support is usually part of a different negotiation. It’s an add-on.
 
 
-## **The sketch**
-
-
-![](/posts/product-vs-project-the-narrative-img1.png)
-
-
 ## **Product**
 
 

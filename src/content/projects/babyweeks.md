@@ -1,6 +1,6 @@
 ---
 title: "Babyweeks"
-blurb: "Single-page React calculator mapping infant's growth cycle leaps to calendar dates."
+blurb: "Single-page React calculator translating infant development leap cycles into actionable calendar insights."
 tags: ["React.js", "UX", "i18n"]
 link: "https://github.com/ntemposd/babyweeks"
 image: "/projects/babyweeks.webp"

@@ -1,6 +1,6 @@
 ---
 title: "23hoopers [BETA]"
-blurb: "A Phoenix + Supabase app for basketball player cards game and talent tracking services."
+blurb: "A Phoenix + Supabase app for digital player cards, gamified scouting, and talent data tracking."
 tags: ["Elixir", "Phoenix", "Supabase", "Fly.io"]
 link: "https://23hoopers.com/"
 image: "/projects/23hoopers-beta.webp"

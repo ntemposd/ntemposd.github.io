@@ -1,6 +1,6 @@
 ---
 title: "Startup Weekend Thessaloniki"
-blurb: "Entrepreneurship hackathon where developers, designers, marketers, product managers, startup enthusiasts come together."
+blurb: "Led execution of four cross-functional entrepreneurship hackathons aligning mentors, teams, investors, and judges."
 tags: ["Community", "Startups", "Education"]
 link: "https://www.facebook.com/swthessaloniki"
 image: "/projects/startup-weekend-thessaloniki.webp"

@@ -1,6 +1,6 @@
 ---
 title: "Easyscout"
-blurb: "A Flask app that orchestrates LLMs to generate pro-grade basketball evaluation reports."
+blurb: "A Flask-based app orchestrating LLM workflows to generate structured, pro-grade basketball scouting reports."
 tags: ["Flask", "Supabase", "API", "AI"]
 link: "https://github.com/ntemposd/easyscout"
 image: "/projects/easyscout.png"
