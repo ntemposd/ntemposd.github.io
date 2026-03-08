@@ -57,7 +57,7 @@ const isEager = (i: number) => i < 6;
               class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
                      shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
-              <div class="aspect-[4/3] overflow-hidden p-6 bg-gray-50">
+              <div class="aspect-[16/9] overflow-hidden bg-gray-50">
                 {src ? (
                   <Image
                     src={src}
@@ -67,7 +67,7 @@ const isEager = (i: number) => i < 6;
                     loading={eager ? 'eager' : 'lazy'}
                     fetchpriority={i === 0 ? 'high' : (eager ? 'low' : 'low')}
                     decoding="async"
-                    class="w-full h-full object-contain group-hover:scale-100 transition-transform duration-300 ease-out"
+                    class="w-full h-full object-contain p-6 group-hover:scale-100 transition-transform duration-300 ease-out"
                   />
                 ) : (
                   <div class="w-full h-full grid place-items-center text-gray-400 text-sm">
@@ -78,12 +78,12 @@ const isEager = (i: number) => i < 6;
 
               <div class="p-5">
                 <h2 class="text-lg font-semibold mb-2 text-gray-900">{p.data.title}</h2>
-                <p class="text-gray-700 text-sm mb-3 leading-relaxed">{p.data.blurb}</p>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mb-3">
                   {tags.map((t) => (
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">{t}</span>
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t}</span>
                   ))}
                 </div>
+                <p class="text-gray-700 text-sm leading-relaxed">{p.data.blurb}</p>
               </div>
             </a>
           );

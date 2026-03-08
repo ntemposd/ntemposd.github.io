@@ -92,7 +92,7 @@ export async function GET(context) {
       const rawImage = post.data.image ?? post.data.cover ?? null;
       const imageUrl = resolveImageUrl(rawImage);
 
-      const absoluteLink = toAbsolute(`/writing/${post.slug}/`);
+      const absoluteLink = toAbsolute(`/essays/${post.slug}/`);
 
       const fullExcerpt = String(post.data.excerpt ?? '').replace(/\s+/g, ' ').trim();
       const fixedExcerpt = toFixedChars(fullExcerpt, CARD_EXCERPT_MAX_CHARS);

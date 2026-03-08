@@ -1,0 +1,132 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+// Load all post covers from src/assets/posts (supports subfolders)
+const coversGlob = import.meta.glob('../../assets/posts/**/*.{png,jpg,jpeg,webp,avif,svg}', { eager: true });
+
+// Map by basename (no extension) → ImageMetadata
+const base = (p: string) => p.split('/').pop()!.replace(/\.[^.]+$/,'').toLowerCase();
+const coverMap = new Map<string, any>(
+  Object.entries(coversGlob).map(([k, mod]) => [base(k), (mod as any).default ?? mod])
+);
+
+// Resolve a frontmatter string ("/posts/foo.webp" or "foo.webp") or fallback to slug
+const resolveCover = (pathStr: unknown, slug: string) => {
+  if (pathStr && typeof pathStr === 'object' && 'src' in (pathStr as any)) return pathStr as any; // already ImageMetadata
+  const tryKeys = [
+    typeof pathStr === 'string' ? base(pathStr) : null,
+    slug.toLowerCase(),
+  ].filter(Boolean) as string[];
+  for (const k of tryKeys) {
+    const hit = coverMap.get(k);
+    if (hit) return hit;
+  }
+  return null;
+};
+
+let posts = await getCollection('posts');
+
+posts = posts
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => {
+    const da = a.data.date instanceof Date ? a.data.date : new Date(a.data.date);
+    const db = b.data.date instanceof Date ? b.data.date : new Date(b.data.date);
+    return db.getTime() - da.getTime();
+  });
+
+// tags helper
+const normTags = (tags: unknown) =>
+  Array.isArray(tags) ? tags
+  : typeof tags === 'string' ? tags.split(',').map((t) => t.trim()).filter(Boolean)
+  : [];
+---
+
+<Layout
+  title="Essays — Dimitrios Ntempos"
+  description="Essays by Dimitrios Ntempos on product strategy, technical judgment, systems thinking, and building in real-world constraints."
+>
+  <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
+    <div>
+      <h1 class="text-3xl font-bold mb-2 text-gray-900">Essays</h1>
+      <p class="text-gray-700 max-w-none">
+        Essays on product thinking, technical judgment, and building within real-world constraints.
+      </p>
+    </div>
+    <a
+      href="/rss.xml"
+      class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium border border-gray-200 text-gray-700 hover:bg-gray-100 transition-colors"
+      title="RSS feed for essays"
+    >
+      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 107.753 1.3A4.5 4.5 0 1113.5 13H11V9.413h.713a2.5 2.5 0 100-5H11V0H2a2 2 0 00-2 2v11a2 2 0 002 2h9.5V13zm0-7a2.5 2.5 0 010 5H2V6h3.5z"></path>
+      </svg>
+      <span>RSS</span>
+    </a>
+  </div>
+
+  {posts.length === 0 ? (
+    <p class="text-gray-600">No posts yet.</p>
+  ) : (
+    <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {posts.map((post) => {
+        const dateObj = post.data.date instanceof Date ? post.data.date : new Date(post.data.date);
+        const d = dateObj.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+
+        const rawCover = (post.data.image ?? post.data.cover) as unknown;
+        const cover = resolveCover(rawCover, post.slug);
+        const tags = normTags(post.data.tags);
+
+        return (
+          <a
+            href={`/essays/${post.slug}/`}
+            class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
+                   shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            data-no-invert
+          >
+            <div class="aspect-[16/9] overflow-hidden bg-gray-50 relative">
+              {cover ? (
+                <Image
+                  src={cover}
+                  alt={post.data.title}
+                  widths={[480, 768, 1200, 1600]}
+                  sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                  class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                />
+              ) : (
+                <div class="w-full h-full grid place-items-center text-gray-400 text-sm">
+                  No cover
+                </div>
+              )}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/0 to-transparent"></div>
+              <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-white px-2 py-1 rounded-md text-xs font-medium text-gray-900 shadow-md z-10">
+                {d}
+              </div>
+            </div>
+
+            <div class="p-5">
+              <h3 class="text-lg font-semibold mb-2">{post.data.title}</h3>
+              {tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mb-3">
+                  {tags.map((t) => (
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t}</span>
+                  ))}
+                </div>
+              )}
+
+              {post.data.excerpt && (
+                <p class="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                  {post.data.excerpt}
+                </p>
+              )}
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  )}
+</Layout>

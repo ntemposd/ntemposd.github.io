@@ -71,7 +71,7 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
 >
   <!-- Opportunistic prefetch for likely next pages -->
   <link rel="prefetch" href="/projects" />
-  <link rel="prefetch" href="/writing" />
+  <link rel="prefetch" href="/essays" />
 
   <!-- Hero -->
   <section class="mb-4">
@@ -150,9 +150,9 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
     </div>
   </section>
 
-  <!-- Latest Writing -->
+  <!-- Latest Essays -->
   <section class="mt-4">
-    <h2 class="text-2xl font-bold mb-3">Writing</h2>
+    <h2 class="text-2xl font-bold mb-3">Essays</h2>
     <p class="text-gray-700 mb-6 max-w-none">
       Latest essays on product thinking, technical judgment, and building within real-world constraints.
     </p>
@@ -167,7 +167,7 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
 
           return (
             <a
-              href={`/writing/${p.slug}/`}
+              href={`/essays/${p.slug}/`}
               class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
                      shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
@@ -201,11 +201,9 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
 
               <div class="p-5">
                 <h3 class="text-lg font-semibold mb-1">{p.data.title}</h3>
-                <p class="text-xs text-gray-500 mb-2">{date}</p>
                 {p.data.excerpt && (
                   <p class="text-gray-600 text-sm leading-relaxed mb-3 line-clamp-3">{p.data.excerpt}</p>
                 )}
-                <span class="mt-2 inline-block text-sm underline">Read more →</span>
               </div>
             </a>
           );
@@ -216,7 +214,7 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
     )}
 
     <div class="mt-6 flex justify-end">
-      <a href="/writing" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/essays" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all posts →
@@ -279,14 +277,6 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
             <div class="p-5">
               <h3 class="text-lg font-semibold mb-2">{p.data.title}</h3>
               <p class="text-gray-600 text-sm leading-relaxed mb-3">{p.data.blurb}</p>
-
-              {Array.isArray(p.data.tags) && p.data.tags.length > 0 && (
-                <div class="flex flex-wrap gap-2">
-                  {p.data.tags.map((t) => (
-                    <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">{t}</span>
-                  ))}
-                </div>
-              )}
             </div>
           </a>
         );
