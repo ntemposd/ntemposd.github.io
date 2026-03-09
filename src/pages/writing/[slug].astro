@@ -14,50 +14,6 @@ export function GET({ params }) {
 }
 ---
 
-  {tags.length > 0 && (
-    <div class="flex flex-wrap gap-2 mb-6">
-      {tags.map((tag) => (
-        <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md font-medium">#{tag}</span>
-      ))}
-    </div>
-  )}
-
-  {/* Hero cover (Image component) */}
-  {cover && (
-    <div class="aspect-[16/9] overflow-hidden rounded-2xl bg-gray-50 mb-6">
-      <Image
-        src={cover}
-        alt={entry.data.title}
-        class="w-full h-full object-cover"
-        widths={[768, 1024, 1440]}
-        sizes="(max-width: 1024px) 100vw, 1024px"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      />
-    </div>
-  )}
-
-  <article id="post-body" class="prose prose-neutral max-w-none lg:prose-xl" data-urlmap={JSON.stringify(urlMap)}>
-    <Content />
-  </article>
-
-  {/* Tiny client-side fix: rewrite /posts/filename.ext to the bundled URL */}
-  <script type="module">
-    // Rewrite inline markdown <img src="/posts/..."> to the dev/prod-served hashed URLs
-    const root = document.getElementById('post-body');
-    const map = root && root.dataset.urlmap ? JSON.parse(root.dataset.urlmap) : {};
-    if (root) {
-      root.querySelectorAll('img[src^="/posts/"]').forEach((img) => {
-        const src = img.getAttribute('src');
-        if (!src) return;
-        const fname = src.split('/').pop().toLowerCase();
-        const url = map[fname];
-        if (url && img.src !== url) img.src = url; // avoid redundant swaps (reduce flicker)
-      });
-    }
-  </script>
-
   <Share postTitle={entry.data.title} postUrl={postUrl} />
   <SubstackSubscribe />
 </Layout>
