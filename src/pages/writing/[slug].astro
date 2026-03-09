@@ -1,4 +1,13 @@
 ---
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('posts');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+  }));
+}
+
 // redirect individual post URLs from /writing/:slug to /essays/:slug
 export function GET({ params }) {
   return Astro.redirect(`/essays/${params.slug}/`, 301);
