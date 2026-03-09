@@ -13,7 +13,3 @@ export function GET({ params }) {
   return Astro.redirect(`/essays/${params.slug}/`, 301);
 }
 ---
-
-  <Share postTitle={entry.data.title} postUrl={postUrl} />
-  <SubstackSubscribe />
-</Layout>
