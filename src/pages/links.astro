@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const categories = [
+  {
+    label: 'Writing',
+    profiles: [
+      { name: 'Essays', url: '/essays', description: 'All my written essays and articles' },
+      { name: 'Substack', url: 'https://substack.com/@ntemposd', description: 'Newsletter with essays and insights' },
+      { name: 'RSS Feed', url: '/rss.xml', description: 'Subscribe to all new posts' },
+    ]
+  },
+  {
+    label: 'Community',
+    profiles: [
+      { name: 'Twitter / X', url: 'https://twitter.com/ntemposd', description: 'Thoughts on product, systems, and building' },
+      { name: 'Product Hunt', url: 'https://producthunt.com/@ntemposd', description: 'Interesting products and community discussions' },
+      { name: 'Quora', url: 'https://www.quora.com/profile/Dimitrios-Ntempos', description: 'Q&A on product management and startups' },
+    ]
+  },
+  {
+    label: 'Builder',
+    profiles: [
+      { name: 'GitHub', url: 'https://github.com/ntemposd', description: 'Open source projects and repositories' },
+      { name: 'Stack Overflow', url: 'https://stackoverflow.com/users/4735121/ntemposd', description: 'Technical questions and answers' },
+    ]
+  },
+  {
+    label: 'Professional',
+    profiles: [
+      { name: 'LinkedIn', url: 'https://linkedin.com/in/ntemposd', description: 'Professional background and experience' },
+    ]
+  },
+  {
+    label: 'Direct',
+    profiles: [
+      { name: 'Email', url: 'mailto:dimitriosntempos@gmail.com', description: 'Get in touch directly' },
+    ]
+  },
+];
+---
+
+<Layout
+  title="Links — Dimitrios Ntempos"
+  description="Find all my web profiles and ways to connect. Essays, open source projects, technical discussions, and direct contact options across platforms."
+>
+  <h1 class="text-3xl font-semibold mb-2">Links</h1>
+  
+  <p class="text-gray-600 mb-10">
+    Here are all the places you can find me online.
+  </p>
+
+  <div class="space-y-8 max-w-3xl">
+    {categories.map((category) => (
+      <div>
+        <h2 class="text-xs font-semibold text-gray-500 uppercase mb-3 tracking-wide">
+          {category.label}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {category.profiles.map((profile) => (
+            <a
+              href={profile.url}
+              target={profile.url.startsWith('mailto:') || profile.url.startsWith('/') ? undefined : "_blank"}
+              rel={profile.url.startsWith('mailto:') || profile.url.startsWith('/') ? undefined : "noopener noreferrer"}
+              class="block p-4 bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-md hover:border-gray-300 transition"
+            >
+              <h3 class="font-semibold text-gray-900 text-sm">
+                {profile.name}
+              </h3>
+              <p class="text-xs text-gray-600 mt-1">
+                {profile.description}
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</Layout>

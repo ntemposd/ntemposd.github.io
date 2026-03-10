@@ -140,13 +140,13 @@ If it doesn’t, I rely more on qualitative input. Five to ten conversations wit
 At the same time, I review competitor funnels. Not to replicate them, but to understand where we might be missing something. I capture screenshots, record short flows, and compare them across a few basic dimensions.
 
 
-| Criteria (Score 1-5)   | Our App | Holihouse | Spaceground | Bedair |
-| ---------------------- | ------- | --------- | ----------- | ------ |
-| **Steps & friction**   |         |           |             |        |
-| **Price clarity**      |         |           |             |        |
-| **Sense of trust**     |         |           |             |        |
-| **Payment experience** |         |           |             |        |
-| **UX & performance**   |         |           |             |        |
+| Criteria(Score 1-5)    | We | Comp(A) | Comp(B) | Comp(C) |
+| ---------------------- | -- | ------- | ------- | ------- |
+| **Steps & friction**   |    |         |         |         |
+| **Price clarity**      |    |         |         |         |
+| **Sense of trust**     |    |         |         |         |
+| **Payment experience** |    |         |         |         |
+| **UX & performance**   |    |         |         |         |
 
 
 Explaining the table’s criteria, I look at the number of steps and the field count. Whether guest checkout exists. How clearly cancellation terms and fees are presented. What trust signals are visible. Which payment methods and currencies are supported, how errors are handled, and whether performance or accessibility might be adding unnecessary cognitive load. Most booking funnels don’t require innovation. They require friction to be removed.

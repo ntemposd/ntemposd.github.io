@@ -131,8 +131,7 @@ Building a GPT wrapper is easy. Building a product people actually rely on? That
 
 <aside class="callout callout-default"><span class="callout-icon">🌐</span><div class="callout-content">
 
-Product: [https://easyscout.xyz](https://easyscout.xyz/)    
-Code: [https://github.com/ntemposd/easyscout](https://github.com/ntemposd/easyscout)
+Get to see the live product [here](https://easyscout.xyz/), and the code [here](https://github.com/ntemposd/easyscout).
 
 </div></aside>
 

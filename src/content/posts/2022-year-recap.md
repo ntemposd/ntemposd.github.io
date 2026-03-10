@@ -9,7 +9,7 @@ image: "/posts/2022-year-recap.png"
 ---
 
 
-🎉Happy new year everyone!
+🎉 Happy new year everyone!
 
 
 I hope you are happily celebrating the beginnings of 2023, meanwhile, I am taking some time to recap the previous one. 2022 has been quite different from its precedents. It started in quarantine and continued with a resignation which brought up a quality family summer while it ended up with new professional beginnings.
