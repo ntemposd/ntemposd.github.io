@@ -1,6 +1,6 @@
 # ntemposd.me
 
-Personal website and blog built with [Astro](https://astro.build). It syncs content from Notion (posts/projects/experience), ships a Substack subscribe embed, supports dark mode with a toggle and system detection, and is deployed via GitHub Pages. Tailwind + typography handle the styling.
+Personal website and blog built with [Astro](https://astro.build). It syncs content from Notion (posts/projects/experience), ships a ButtonDown subscribe embed, supports dark mode with a toggle and system detection, and is deployed via GitHub Pages. Tailwind + typography handle the styling.
 
 **Live site:** [https://ntemposd.me](https://ntemposd.me)
 
@@ -12,7 +12,7 @@ Personal website and blog built with [Astro](https://astro.build). It syncs cont
 - 🖼️ **Image handling** - Downloads and caches images locally, preserves Notion captions as Markdown alt text
 - 🌓 **Dark mode** - System preference detection with manual toggle, persists to localStorage
 - 📱 **Responsive nav** - Mobile hamburger menu, desktop horizontal nav
-- 📧 **Substack embed** - Newsletter subscription iframe on post pages
+- 📧 **ButtonDown embed** - Newsletter subscription iframe on post pages
 - 🎨 **Tailwind CSS** - Responsive styling with typography plugin for prose content
 - 🔍 **SEO basics** - Sitemap generation and Open Graph meta tags
 
@@ -119,7 +119,7 @@ myastro/
 │   │   └── projects/
 │   ├── components/
 │   │   ├── Share.astro    # Social sharing buttons
-│   │   └── SubstackSubscribe.astro    # Newsletter embed
+│   │   └── MailingListSubscribe.astro    # Newsletter embed
 │   ├── content/    # Content collections
 │   │   ├── config.ts
 │   │   ├── posts/    # Synced from Notion
@@ -189,10 +189,10 @@ Edit `src/layouts/Layout.astro` to change:
 - Tailwind config: `tailwind.config.ts`
 - Typography (prose): Configured via `@tailwindcss/typography`
 
-### Substack Integration
+### ButtonDown Integration
 
-1. Update your Substack username in `src/components/SubstackSubscribe.astro`
-2. The embed iframe will load from `https://[username].substack.com/embed`
+1. Update your ButtonDown username in `src/components/MailingListSubscribe.astro`
+2. The embed iframe will load from `https://buttondown.com/api/emails/embed-subscribe/[username]`
 
 ---
 
