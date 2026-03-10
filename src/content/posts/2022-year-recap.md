@@ -30,7 +30,7 @@ I hope you are happily celebrating the beginnings of 2023, meanwhile, I am takin
 ## **Hello 100 Mentors**
 
 
-Last December **I joined 100 Mentors**! [100 Mentors](https://100mentors.com/)’ grand vision is to democratize education for everyone while our mission is to empower learners by helping them enhance their soft skills! The team is super diverse and folks seem to be empowered. It’s always great working in such an environment, and I really enjoy my first days here. Regarding my role, I am the first 100% product person of the organization, my goal is to initially better connect the business and tech departments while advocating the user needs during product development. Let’s see what I can bring in…
+Last December **I started working with 100 Mentors**! [100 Mentors](https://100mentors.com/)’ grand vision is to democratize education for everyone while our mission is to empower learners by helping them enhance their soft skills! The team is super diverse and folks seem to be empowered. It’s always great working in such an environment, and I really enjoy my first days here. Regarding my role, I am the first person working 100% on the product, my goal for the next 6 months is to initially better connect the business and tech departments while advocating the user needs during product development cycle of a new product. Let’s see what I can bring in.
 
 
 ## **Extras**

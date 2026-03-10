@@ -103,17 +103,13 @@ if (typeof rawCover === 'string') {
 >
   <h1 class="text-3xl font-semibold mb-3">{entry.data.title}</h1>
   
-  <div class="flex items-center gap-3 mb-4">
-    <p class="inline-flex items-center rounded-md bg-white/90 backdrop-blur-sm border border-white px-2 py-1 text-xs font-medium text-gray-900 shadow-md">
+  <div class="flex flex-wrap items-center gap-2 mb-4">
+    <span class="inline-flex items-center rounded-md bg-white/90 backdrop-blur-sm border border-white px-2 py-1 text-xs font-medium text-gray-900 shadow-md whitespace-nowrap">
       {fullDate}
-    </p>
-    {tags.length > 0 && (
-      <div class="flex gap-2 overflow-x-auto">
-        {tags.map((tag) => (
-          <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300 whitespace-nowrap">{tag}</span>
-        ))}
-      </div>
-    )}
+    </span>
+    {tags.map((tag) => (
+      <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300 whitespace-nowrap">{tag}</span>
+    ))}
   </div>
 
   {entry.data.excerpt && <p class="prose prose-neutral max-w-none lg:prose-lg mb-6">{entry.data.excerpt}</p>}

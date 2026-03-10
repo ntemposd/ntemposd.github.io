@@ -41,7 +41,10 @@ The material covered in the book is intended for graduate students, teachers, re
 
 <aside class="callout callout-default"><span class="callout-icon">🌐</span><div class="callout-content">
 
-[https://link.springer.com/book/10.1007/978-1-4939-0286-6](https://link.springer.com/book/10.1007/978-1-4939-0286-6)
+Book: [https://link.springer.com/book/10.1007/978-1-4939-0286-6](https://link.springer.com/book/10.1007/978-1-4939-0286-6)    
+Scholar profile: [https://scholar.google.com/citations?user=V4LEU8EAAAAJ&hl=en](https://scholar.google.com/citations?user=V4LEU8EAAAAJ&hl=en)    
+    
+ResearchGate profile: [https://www.researchgate.net/scientific-contributions/Dimitrios-Ntempos-2108244196](https://www.researchgate.net/scientific-contributions/Dimitrios-Ntempos-2108244196)
 
 </div></aside>
 

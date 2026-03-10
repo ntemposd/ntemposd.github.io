@@ -246,3 +246,12 @@ html.dark .callout-default {
     gap: 2rem;
   }
 }
+
+/* Minimal table mobile fix - scrollable wrapper only */
+@media (max-width: 640px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

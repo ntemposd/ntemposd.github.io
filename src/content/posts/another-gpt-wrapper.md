@@ -117,7 +117,7 @@ Keeping the prompt closed for now allows me to iterate on the **Product DNA** wi
 Easyscout isn't an attempt to redefine basketball scouting, nor is it an argument that GPT wrappers are inherently valuable. It's a practical exploration of modern product building in a world where intelligence is cheap and abundant. In that world, differentiation often moves elsewhere.
 
 
-It moves to:
+It moves to
 
 - Problem selection
 - UX clarity
@@ -131,10 +131,8 @@ Building a GPT wrapper is easy. Building a product people actually rely on? That
 
 <aside class="callout callout-default"><span class="callout-icon">🌐</span><div class="callout-content">
 
-**Links**    
-- Product ([https://easyscout.xyz](https://easyscout.xyz/))    
-    
-- Code ([https://github.com/ntemposd/easyscout](https://github.com/ntemposd/easyscout))
+Product: [https://easyscout.xyz](https://easyscout.xyz/)    
+Code: [https://github.com/ntemposd/easyscout](https://github.com/ntemposd/easyscout)
 
 </div></aside>
 

@@ -112,3 +112,13 @@ You’d like something more specific eh? [**SKGTech**](http://skgtech.io/) peo
 Ready for Thessaloniki?
 
 
+
+
+<aside class="callout callout-default"><span class="callout-icon">🌐</span><div class="callout-content">
+
+Originally appeared in: [https://magazine.startus.cc/thessaloniki-is-the-place-to-grow-your-startup/](https://magazine.startus.cc/thessaloniki-is-the-place-to-grow-your-startup/)
+
+</div></aside>
+
+
+

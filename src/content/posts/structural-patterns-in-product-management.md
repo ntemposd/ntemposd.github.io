@@ -137,16 +137,16 @@ If it doesn’t, I rely more on qualitative input. Five to ten conversations wit
 ### I Benchmark Competitors
 
 
-At the same time, I review competitor funnels. Not to replicate them, but to understand where we might be missing something. I capture screenshots, record short flows, and compare them across a few basic dimensions 
+At the same time, I review competitor funnels. Not to replicate them, but to understand where we might be missing something. I capture screenshots, record short flows, and compare them across a few basic dimensions.
 
 
-| Criteria (Score 1-5)   | Our App | Competitor A | Competitor B | Competitor C |
-| ---------------------- | ------- | ------------ | ------------ | ------------ |
-| **Steps & friction**   |         |              |              |              |
-| **Price clarity**      |         |              |              |              |
-| **Sense of trust**     |         |              |              |              |
-| **Payment experience** |         |              |              |              |
-| **UX & performance**   |         |              |              |              |
+| Criteria (Score 1-5)   | Our App | Holihouse | Spaceground | Bedair |
+| ---------------------- | ------- | --------- | ----------- | ------ |
+| **Steps & friction**   |         |           |             |        |
+| **Price clarity**      |         |           |             |        |
+| **Sense of trust**     |         |           |             |        |
+| **Payment experience** |         |           |             |        |
+| **UX & performance**   |         |           |             |        |
 
 
 Explaining the table’s criteria, I look at the number of steps and the field count. Whether guest checkout exists. How clearly cancellation terms and fees are presented. What trust signals are visible. Which payment methods and currencies are supported, how errors are handled, and whether performance or accessibility might be adding unnecessary cognitive load. Most booking funnels don’t require innovation. They require friction to be removed.
@@ -174,7 +174,7 @@ Before changing anything, I run a working session around a simple question: “W
 ### My Bias Toward Clarity and Focus Protection
 
 
-Across teams, certain patterns tend to repeat. Unclear tickets slow everything down. This is not solely a Product issue. Each team develops its own rhythm around ticket quality. Some operate well with lightweight descriptions and strong collaboration. Others require more detailed specifications. The important part is consistency. Excessive parallel work also affects delivery. Context switching is rarely visible on a dashboard, but it accumulates. Two tasks that should take two hours each rarely take four hours when handled in parallel. Mid-sprint scope changes have a similar effect. Even in structured sprint environments, urgent requests appear. Without clear boundaries, predictability erodes quietly. In these cases, I usually focus on a few fundamentals
+Across teams, certain patterns tend to repeat. Unclear tickets slow everything down. This is not solely a Product issue. Each team develops its own rhythm around ticket quality. Some operate well with lightweight descriptions and strong collaboration. Others require more detailed specifications. The important part is consistency. Excessive parallel work also affects delivery. Context switching is rarely visible on a dashboard, but it accumulates. Two tasks that should take two hours each rarely take four hours when handled in parallel. Mid-sprint scope changes have a similar effect. Even in structured sprint environments, urgent requests appear. Without clear boundaries, predictability erodes quietly. In these cases, I usually focus on a few fundamentals.
  
 
 
