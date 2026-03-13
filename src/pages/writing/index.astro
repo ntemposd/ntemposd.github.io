@@ -1,7 +1,21 @@
 ---
-// permanent redirect from old writing route to essays
-export function GET() {
-  return Astro.redirect('/essays', 301);
-}
+const destination = '/essays/';
 ---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${destination}`} />
+    <link rel="canonical" href={destination} />
+    <title>Redirecting...</title>
+    <script is:inline>
+      window.location.replace('/essays/');
+    </script>
+  </head>
+  <body>
+    <p>
+      Redirecting to <a href={destination}>{destination}</a>
+    </p>
+  </body>
+</html>
 

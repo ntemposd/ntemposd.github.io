@@ -5,7 +5,7 @@ const GA_ID = import.meta.env.PUBLIC_GA_ID;
 
 const {
   title = 'ntemposd',
-  description = 'Product Manager • Builder',
+  description = 'Technical Product Manager focused on APIs, integrations, and data systems.',
   entry = null,
   ogImage = null,
 } = Astro.props;
@@ -40,21 +40,16 @@ const ogDesc = entry?.data?.excerpt ?? description;
     <link rel="canonical" href={Astro.url.href} />
 
     <!-- ✅ Open Graph / Twitter Meta -->
-    {
-      entry && (
-        <>
-          <meta property="og:type" content="article" />
-          <meta property="og:title" content={ogTitle} />
-          <meta property="og:description" content={ogDesc} />
-          {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta property="og:type" content={entry ? 'article' : 'website'} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDesc} />
+    <meta property="og:url" content={Astro.url.href} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
 
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={ogTitle} />
-          <meta name="twitter:description" content={ogDesc} />
-          {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
-        </>
-      )
-    }
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDesc} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
     <!-- ✅ Set dark mode class before first paint -->
     <script is:inline>

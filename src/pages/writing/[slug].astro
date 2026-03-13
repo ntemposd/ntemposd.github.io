@@ -8,8 +8,23 @@ export async function getStaticPaths() {
   }));
 }
 
-// redirect individual post URLs from /writing/:slug to /essays/:slug
-export function GET({ params }) {
-  return Astro.redirect(`/essays/${params.slug}/`, 301);
-}
+const destination = `/essays/${Astro.params.slug}/`;
 ---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0;url=${destination}`} />
+    <link rel="canonical" href={destination} />
+    <title>Redirecting...</title>
+    <script is:inline>
+      const canonical = document.querySelector('link[rel="canonical"]');
+      if (canonical && canonical.href) window.location.replace(canonical.href);
+    </script>
+  </head>
+  <body>
+    <p>
+      Redirecting to <a href={destination}>{destination}</a>
+    </p>
+  </body>
+</html>

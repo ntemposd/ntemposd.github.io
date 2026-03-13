@@ -97,42 +97,51 @@ if (typeof rawCover === 'string') {
 
 <Layout
   title={`${entry.data.title} — ntemposd`}
-  description={entry.data.excerpt ?? 'Essays by Dimitrios Ntempos on product, systems, data, and building.'}
+  description={entry.data.excerpt ?? 'Essays on technology, product thinking, and the tech startup ecosystem.'}
   entry={entry}
   ogImage={ogImage}
 >
-  <h1 class="text-3xl font-semibold mb-3">{entry.data.title}</h1>
-  
-  <div class="flex flex-wrap items-center gap-2 mb-4">
-    <span class="inline-flex items-center rounded-md bg-white/90 backdrop-blur-sm border border-white px-2 py-1 text-xs font-medium text-gray-900 shadow-md whitespace-nowrap">
-      {fullDate}
-    </span>
-    {tags.map((tag) => (
-      <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300 whitespace-nowrap">{tag}</span>
-    ))}
-  </div>
+  <style>
+    :global(.dots-overlay) {
+      -webkit-mask-image: radial-gradient(transparent 0%, rgba(0,0,0,0.3) 40%, #000 80%);
+      mask-image: radial-gradient(transparent 0%, rgba(0,0,0,0.3) 40%, #000 80%);
+    }
+  </style>
 
-  {entry.data.excerpt && <p class="prose prose-neutral max-w-none lg:prose-lg mb-6">{entry.data.excerpt}</p>}
-
-  {/* Hero cover (Image component) */}
-  {cover && (
-    <div class="aspect-[16/9] overflow-hidden rounded-2xl bg-gray-50 mb-6">
-      <Image
-        src={cover}
-        alt={entry.data.title}
-        class="w-full h-full object-cover"
-        widths={[768, 1024, 1440]}
-        sizes="(max-width: 1024px) 100vw, 1024px"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-      />
+  <div class="relative bg-white -mx-4 px-4 py-6">
+    <h1 class="text-3xl font-semibold mb-3">{entry.data.title}</h1>
+    
+    <div class="flex flex-wrap items-center gap-2 mb-4">
+      <span class="inline-flex items-center rounded-md bg-white/90 backdrop-blur-sm border border-white px-2 py-1 text-xs font-medium text-gray-900 shadow-md whitespace-nowrap">
+        {fullDate}
+      </span>
+      {tags.map((tag) => (
+        <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300 whitespace-nowrap">{tag}</span>
+      ))}
     </div>
-  )}
 
-  <article id="post-body" class="prose prose-neutral max-w-none lg:prose-xl" data-urlmap={JSON.stringify(urlMap)}>
-    <Content />
-  </article>
+    {entry.data.excerpt && <p class="prose prose-neutral max-w-none lg:prose-lg mb-6">{entry.data.excerpt}</p>}
+
+    {/* Hero cover (Image component) */}
+    {cover && (
+      <div class="aspect-[16/9] overflow-hidden rounded-2xl bg-gray-50 mb-6">
+        <Image
+          src={cover}
+          alt={entry.data.title}
+          class="w-full h-full object-cover"
+          widths={[768, 1024, 1440]}
+          sizes="(max-width: 1024px) 100vw, 1024px"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    )}
+
+    <article id="post-body" class="prose prose-neutral max-w-none lg:prose-xl font-normal" data-urlmap={JSON.stringify(urlMap)}>
+      <Content />
+    </article>
+  </div>
 
   {/* Tiny client-side fix: rewrite /posts/filename.ext to the bundled URL */}
   <script type="module">
