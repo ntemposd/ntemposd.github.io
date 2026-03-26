@@ -1,8 +1,31 @@
 # ntemposd.me
 
-Personal website and blog built with [Astro](https://astro.build). It syncs content from Notion (posts/projects/experience), ships a ButtonDown subscribe embed, supports dark mode with a toggle and system detection, and is deployed via GitHub Pages. Tailwind + typography handle the styling.
+Personal website built with Astro, using Notion as a headless CMS.
 
 **Live site:** [https://ntemposd.me](https://ntemposd.me)
+---
+
+## Overview
+
+This project implements a content pipeline:
+
+- Content is created and managed in Notion  
+- Fetched via the Notion API  
+- Transformed into Markdown  
+- Compiled into a static site during build time  
+
+---
+
+## System Design
+
+A custom sync layer connects Notion to the site:
+
+- Fetches structured content from Notion databases  
+- Transforms Notion blocks into Markdown  
+- Downloads and caches assets locally  
+- Generates content collections for Astro  
+
+This allows Notion to act as a CMS while keeping the site fully static.
 
 ---
 
