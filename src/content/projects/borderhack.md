@@ -1,5 +1,6 @@
 ---
 title: "BorderHACK"
+type: "Community"
 blurb: "Designed a 3-day crisis-focused hackathon coordinating NGOs, developers, and policy stakeholders."
 tags: ["Community", "Hackathon"]
 link: "https://github.com/BorderHACK-org"

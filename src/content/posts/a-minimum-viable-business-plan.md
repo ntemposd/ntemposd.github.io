@@ -204,3 +204,12 @@ We’ll be mainly spending to cover production, intellectual property, human res
 - We break even at the “Xth” Journey.
 - Our 3-year & 5-year income statements are distributed upon request
 
+
+<aside class="callout callout-default"><span class="callout-icon">➡</span><div class="callout-content">
+
+️ This post originally appeared on my [GitHub](https://github.com/ntemposd/a-minimum-viable-business-plan).
+
+</div></aside>
+
+
+

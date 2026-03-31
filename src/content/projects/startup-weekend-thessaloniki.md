@@ -1,5 +1,6 @@
 ---
 title: "Startup Weekend Thessaloniki"
+type: "Community"
 blurb: "Led execution of four cross-functional entrepreneurship hackathons aligning mentors, teams, investors, and judges."
 tags: ["Community", "Startups", "Education"]
 link: "https://www.facebook.com/swthessaloniki"

@@ -1,6 +1,6 @@
 ---
 title: "Thessaloniki is the place to build your startup"
-date: "2016-09-13"
+date: "2015-05-12"
 excerpt: "Dear doers, makers, and shakers. Welcome to Thessaloniki’s Startup City Guide. You might be aware of our beloved city for the party vibe and the beautiful beaches of the nearby Chalkidiki. Ok, rewind this for a moment; we do also have a super active and fast moving tech community here."
 tags: ["Business", "Startups"]
 draft: false

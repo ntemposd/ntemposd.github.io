@@ -1,5 +1,6 @@
 ---
 title: "23hoopers [BETA]"
+type: "Experiments"
 blurb: "A Phoenix + Supabase app for digital player cards, gamified scouting, and talent data tracking."
 tags: ["Elixir", "Phoenix", "Supabase", "Fly.io"]
 link: "https://github.com/ntemposd/myrookie"

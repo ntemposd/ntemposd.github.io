@@ -1,15 +1,15 @@
 ---
 title: "Serving on the SXSW Accelerator Advisory Board"
-date: "2018-02-28"
+date: "2018-11-18"
 excerpt: "Reflections on serving on the SXSW Accelerator Advisory Board, reviewing early-stage startups from around the world and helping founders from Greece and Cyprus participate in one of the most well-known startup events."
-tags: ["Startups", "Reflection"]
+tags: ["Startups", "Reflection", "Archive"]
 draft: false
 notionId: "31f73424-8c3c-801c-afc6-e5236b86134c"
 image: "/posts/sxsw-accelerator.jpg"
 ---
 
 
-Tech events have always been environments I enjoy. They bring together people building new things — founders, engineers, investors, and curious observers — all exchanging ideas about what technology might look like next. In Autumn 2017 I had the opportunity to join the **SXSW Accelerator Advisory Board** for the upcoming 2018 program, part of the startup pitch competition that takes place during the SXSW Conference in Austin, Texas.
+Tech events have always been environments I enjoy. They bring together people building new things, such as founders, engineers, investors, and curious observers, all exchanging ideas about what technology might look like next. In Autumn 2017, I joined the Advisory Board for the 2018 [SXSW Accelerator](https://sxsw.com/pitch/). This program is a startup pitch competition held annually during the SXSW Conference in Austin, Texas.
 
 
 ## The Role
@@ -18,10 +18,16 @@ Tech events have always been environments I enjoy. They bring together people bu
 My role involved reviewing startup applications and helping support founders who wanted to present their companies at the event. I was also asked to help identify and encourage startups from **Greece and Cyprus** to apply and take advantage of the opportunity to present their work to an international audience. Serving on the advisory board offered a window into a wide range of early-stage companies working on emerging technologies. Each year startups from around the world apply across multiple categories, from enterprise software and fintech to emerging consumer technologies.
 
 
+During the review process I focused primarily on startups applying in the following categories
+
+- Health & Wearables Technologies
+- Payment & FinTech Technologies
+- Sports & Performance Technologies
+
 ## The Ecosystem
 
 
-The event brings founders in front of a panel of investors, entrepreneurs, and technology leaders. Over the years the program has featured judges and mentors from across the technology ecosystem, including venture capitalists, founders, and well-known industry figures. The accelerator has also helped highlight companies that later became widely recognized in the startup ecosystem. Early participants have included startups such as **Siri, Klout, Hipmunk, Wildfire, Foodspotting, and Tango**, many of which later raised funding or were acquired.
+The event brings founders in front of a panel of investors, entrepreneurs, and technology leaders. Over the years the program has featured judges and mentors from across the technology industry, including venture capitalists, founders, and well-known figures from the startup world. Serving on the advisory board also meant reviewing applications from founders with very different backgrounds. Many teams were small, typically two to five people, and it was particularly interesting to see founders who had previously worked at companies such as Google or Facebook leaving those roles to build their own startups. The accelerator has also helped highlight companies that later became widely recognized. Early participants have included startups such as **Siri, Klout, Hipmunk, Wildfire, Foodspotting, and Tango**, many of which later grew exponentially, raised funding or were acquired.
 
 
 For me, participating in the process was an opportunity to see how founders from different parts of the world approach building products and solving problems. It was also a reminder that innovation rarely happens in isolation — it emerges from communities where people exchange ideas, challenge assumptions, and build on each other's work. And of course, all of this happens in **Austin during SXSW**, when the city briefly becomes one of the most vibrant meeting points of the global technology community.
@@ -87,7 +93,7 @@ The application deadline is Friday, November 10th at 11:59pm CST, and the event 
 
 <aside class="callout callout-default"><span class="callout-icon">➡</span><div class="callout-content">
 
-️ This post is part of my personal archive. It originally appeared in earlier forms on previous blogs.
+️ This post is part of my personal archive. It originally appeared on a previous blog in 2017.
 
 </div></aside>
 

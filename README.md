@@ -95,6 +95,7 @@ Create three Notion databases with the following structures:
 
 #### Projects Database
 - `Name` (title)
+- `Type` (select)
 - `Published` (checkbox)
 - `Excerpt` (text)
 - `Tags` (multi-select)

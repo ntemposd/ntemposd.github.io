@@ -1,5 +1,6 @@
 ---
 title: "SKGTech"
+type: "Community"
 blurb: "Co-founded and grew a regional tech NGO facilitating structured knowledge exchange across disciplines."
 tags: ["Community", "NGO"]
 link: "https://github.com/skgtech/skgtech.github.io"

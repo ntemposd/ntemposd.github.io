@@ -2,7 +2,7 @@
 title: "What an early tech startup incubator taught me"
 date: "2013-08-04"
 excerpt: "A reflection on participating in one of the early startup incubation programs in Greece in 2013 — what it taught me about feedback, hardware development, and the realities of early-stage ecosystems."
-tags: ["Startups", "Reflection"]
+tags: ["Startups", "Reflection", "Archive"]
 draft: false
 notionId: "31f73424-8c3c-80cf-9f35-df22b185a435"
 image: "/posts/tech-incubator-lessons.jpg"
@@ -12,7 +12,7 @@ image: "/posts/tech-incubator-lessons.jpg"
 ## Context
 
 
-In 2013 the startup ecosystem in Greece was still forming. New initiatives were emerging from both public and private organizations with the goal of helping young founders develop entrepreneurial skills and turn ideas into companies. At the time, my team was building an early-stage hardware startup called Sociallgreen. During the pilot phase of one of the first government-backed incubation initiatives, four members of our team participated in the program from February to June 2013. During those four months we delivered the first prototype of our product and incorporated the company under Sociallgreen P.C. It was an intense period that taught us a lot about both product development and the realities of early startup ecosystems.
+It’s 2013 and the startup ecosystem in Greece is still forming. New initiatives are emerging from both public and private organizations with the goal of helping young founders develop entrepreneurial skills and turn ideas into companies. At the time, my team was building an early-stage hardware startup called Sociallgreen. During the pilot phase of one of the first government-backed incubation initiatives, four members of our team participated in the program from February to June 2013. During those four months we delivered the first prototype of our product and incorporated the company under Sociallgreen P.C. It was an intense period that taught us a lot about both product development and the realities of early startup ecosystems.
 
 
 Looking back, a few lessons stayed with me.

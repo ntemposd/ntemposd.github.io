@@ -1,5 +1,6 @@
 ---
 title: "Startup Live Thessaloniki"
+type: "Community"
 blurb: "Executed a 36-hour venture-building event integrating mentor sessions, structured validation, and pitch evaluation."
 tags: ["Community", "Startups", "Education"]
 link: "https://www.facebook.com/startuplivethessaloniki"

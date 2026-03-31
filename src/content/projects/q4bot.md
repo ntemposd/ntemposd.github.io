@@ -1,5 +1,6 @@
 ---
 title: "Q4Bot"
+type: "Experiments"
 blurb: "Introduced Q4I, a proprietary clutch-performance metric analyzing late-game decision impact in basketball."
 tags: ["Flask", "SQLite", "Stripe", "Vercel"]
 link: "https://q4bot.vercel.app/"

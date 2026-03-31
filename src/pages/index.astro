@@ -37,8 +37,8 @@ let posts = await getCollection('posts');
 posts = posts
   .filter((p) => !p.data.draft)
   .sort((a, b) => {
-    const da = a.data.date instanceof Date ? a.data.date : new Date(a.data.date);
-    const db = b.data.date instanceof Date ? b.data.date : new Date(b.data.date);
+    const da = new Date(a.data.date);
+    const db = new Date(b.data.date);
     return db.getTime() - da.getTime();
   })
   .slice(0, 3);
@@ -63,6 +63,23 @@ const cardGlobalIndex = (section: 'projects'|'posts', localIndex: number) =>
 // Card image sizes: keep it tight for 3-col grid
 const CARD_WIDTHS = [480, 768, 1024]; // good spread, smaller payload
 const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
+
+const normalizeProjectType = (value?: string) => {
+  const normalized = value?.trim().toLowerCase();
+
+  switch (normalized) {
+    case 'product':
+    case 'products':
+      return 'Products';
+    case 'experiment':
+    case 'experiments':
+      return 'Experiments';
+    case 'community':
+      return 'Community';
+    default:
+      return value?.trim() || null;
+  }
+};
 ---
 
 <Layout
@@ -176,8 +193,7 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
       <div class="grid md:grid-cols-3 gap-6">
         {posts.map((p, i) => {
           const gIdx = cardGlobalIndex('posts', i);
-          const date = (p.data.date instanceof Date ? p.data.date : new Date(p.data.date)).toISOString().split('T')[0];
-          const coverPath = (p.data.image ?? p.data.cover) as string | undefined;
+          const coverPath = p.data.image as string | undefined;
           const resolved = resolveLocal(coverPath);
 
           return (
@@ -249,6 +265,7 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
         const gIdx = cardGlobalIndex('projects', i);
         const resolved = resolveLocal(p.data.image as string | undefined);
         const anchorRel = isExternal(p.data.link) ? 'noopener noreferrer' : undefined;
+        const projectType = normalizeProjectType(p.data.type);
 
         return (
           <a
@@ -258,7 +275,14 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
             class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
                    shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
-            <div data-no-invert class="aspect-[6/3] overflow-hidden bg-gray-50">
+            <div data-no-invert class="relative aspect-[6/3] overflow-hidden bg-gray-50">
+              {projectType && (
+                <div class="absolute right-4 top-4 z-10">
+                  <span class="inline-flex items-center rounded-none bg-white/90 px-2.5 py-1 text-xs font-medium text-gray-700 backdrop-blur-sm">
+                    {projectType}
+                  </span>
+                </div>
+              )}
               {resolved ? (
                 resolved.isSvg ? (
                   // For SVGs, use plain <img> (no transforms), keeps file tiny.
@@ -290,7 +314,7 @@ const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
             </div>
 
             <div class="p-5">
-              <h3 class="text-lg font-semibold mb-2">{p.data.title}</h3>
+              <h3 class="mb-2 text-lg font-semibold">{p.data.title}</h3>
               <p class="text-gray-600 text-sm leading-relaxed mb-3">{p.data.blurb}</p>
             </div>
           </a>

@@ -45,6 +45,15 @@ function readTitle(props: any) {
   const k = Object.keys(props).find((x)=>props[x]?.type==='title');
   return k ? plain(props[k].title) : '';
 }
+function readSingleValue(prop: any): string {
+  if (!prop?.type) return '';
+  if (prop.type === 'select') return prop.select?.name?.trim() ?? '';
+  if (prop.type === 'status') return prop.status?.name?.trim() ?? '';
+  if (prop.type === 'multi_select') return prop.multi_select?.[0]?.name?.trim() ?? '';
+  if (prop.type === 'rich_text') return plain(prop.rich_text);
+  if (prop.type === 'title') return plain(prop.title);
+  return '';
+}
 
 // ---------- Notion wrappers ----------
 async function databasesQueryAll(database_id: string, body: any = {}) {
@@ -177,6 +186,7 @@ async function downloadToAssets(url: string, filenameBase: string) {
     slug: string;
     data: {
       title: string;
+      type?: string;
       blurb: string;
       tags: string[];
       link: string;
@@ -194,6 +204,7 @@ async function downloadToAssets(url: string, filenameBase: string) {
     const title = readTitle(p) || '(Untitled)';
     const slugProp = p.Slug?.type === 'rich_text' ? plain(p.Slug.rich_text) : '';
     const slug = slugProp || slugify(title);
+    const type = readSingleValue(p.Type ?? p.type) || undefined;
 
     const blurb =
       p.Blurb?.type === 'rich_text' ? plain(p.Blurb.rich_text)
@@ -221,6 +232,7 @@ async function downloadToAssets(url: string, filenameBase: string) {
       slug,
       data: {
         title,
+        type,
         blurb,
         tags,
         link,

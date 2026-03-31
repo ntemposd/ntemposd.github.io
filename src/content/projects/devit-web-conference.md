@@ -1,5 +1,6 @@
 ---
 title: "DEVit Web Conference"
+type: "Community"
 blurb: "Designed and scaled an international web development conference coordinating speakers, sponsors, and 500+ attendees."
 tags: ["Community", "Web"]
 link: "https://github.com/skgtech/devit"

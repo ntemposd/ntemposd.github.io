@@ -23,6 +23,7 @@ const projects = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    type: z.string().optional(),
     blurb: z.string(),
     tags: z.array(z.string()).default([]),
     link: z.string().url(),

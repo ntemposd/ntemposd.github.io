@@ -1,5 +1,6 @@
 ---
 title: "3x3.gr"
+type: "Products"
 blurb: "Digital operations platform streamlining tournament management, registrations, and promotion for 3x3 basketball events."
 tags: ["Next.js", "Stripe", "Backoffice"]
 link: "http://www.3x3.gr/"
