@@ -95,10 +95,10 @@ const normalizeProjectType = (value?: string) => {
     <div class="flex flex-col-reverse md:flex-row items-center md:items-start gap-8">
       <div class="flex-1">
         <h1 class="text-3xl font-bold mb-2 text-gray-900">Dimitrios Ntempos</h1>
-        <p class="text-lg font-semibold mb-2 text-gray-700">Product Manager • API & Integration Systems</p>
-        <p class="text-gray-600 max-w-2xl leading-relaxed mb-4">
-          I build products through systems—APIs, integrations, and data. My work focuses on connecting workflows, 
-          event pipelines, and operational or financial tooling, turning complexity into clear, scalable execution.
+        <p class="text-lg font-semibold mb-2 text-gray-700">Product Manager • Integrations & Data</p>
+        <p class="text-gray-600 max-w-2xl leading-relaxed mb-6">
+          I build products around integrations, data, and workflows.
+          This is where I write and build, exploring ideas, and projects.
         </p>
 
         <!-- Social Links -->
@@ -184,9 +184,9 @@ const normalizeProjectType = (value?: string) => {
 
   <!-- Latest Essays -->
   <section class="mt-4">
-    <h2 class="text-2xl font-bold mb-3">Essays</h2>
+    <h2 class="text-2xl font-bold mb-3">What I write</h2>
     <p class="text-gray-700 mb-6 max-w-none">
-      Latest essays on technology, product thinking, and the tech startup ecosystem.
+      Latest essays on product thinking, startups, and what I'm learning over time.
     </p>
 
     {posts.length ? (
@@ -255,9 +255,9 @@ const normalizeProjectType = (value?: string) => {
   
   <!-- Projects -->
   <section id="projects" class="mt-4">
-    <h2 class="text-2xl font-bold mb-3">Projects</h2>
+    <h2 class="text-2xl font-bold mb-3">What I build</h2>
     <p class="text-gray-700 mb-6 max-w-none">
-      Latest products, technical experiments, and structured initiatives exploring systems and applied product execution.
+      Latest products, experiments, and community work I've built or contributed to.
     </p>
 
     <div class="grid md:grid-cols-3 gap-6">
@@ -266,6 +266,7 @@ const normalizeProjectType = (value?: string) => {
         const resolved = resolveLocal(p.data.image as string | undefined);
         const anchorRel = isExternal(p.data.link) ? 'noopener noreferrer' : undefined;
         const projectType = normalizeProjectType(p.data.type);
+        const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
 
         return (
           <a
@@ -276,13 +277,6 @@ const normalizeProjectType = (value?: string) => {
                    shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
           >
             <div data-no-invert class="relative aspect-[6/3] overflow-hidden bg-gray-50">
-              {projectType && (
-                <div class="absolute right-4 top-4 z-10">
-                  <span class="inline-flex items-center rounded-none bg-white/90 px-2.5 py-1 text-xs font-medium text-gray-700 backdrop-blur-sm">
-                    {projectType}
-                  </span>
-                </div>
-              )}
               {resolved ? (
                 resolved.isSvg ? (
                   // For SVGs, use plain <img> (no transforms), keeps file tiny.
@@ -311,10 +305,22 @@ const normalizeProjectType = (value?: string) => {
                   Image not found
                 </div>
               )}
+              {projectType && (
+                <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-white px-2 py-1 rounded-md text-xs font-medium text-gray-900 shadow-md z-10">
+                  {projectType}
+                </div>
+              )}
             </div>
 
             <div class="p-5">
               <h3 class="mb-2 text-lg font-semibold">{p.data.title}</h3>
+              {tags.length > 0 && (
+                <div class="flex flex-wrap gap-2 mb-3">
+                  {tags.map((t) => (
+                    <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t}</span>
+                  ))}
+                </div>
+              )}
               <p class="text-gray-600 text-sm leading-relaxed mb-3">{p.data.blurb}</p>
             </div>
           </a>

@@ -17,6 +17,7 @@ export async function GET(context) {
   );
 
   const toAbsolute = (url) => new URL(url, context.site).toString();
+  const feedUrl = toAbsolute(context.url.pathname);
   const escapeHtml = (value) =>
     String(value)
       .replace(/&/g, '&amp;')
@@ -106,7 +107,7 @@ export async function GET(context) {
         safeExcerpt ? `<p>${safeExcerpt}</p>` : '',
         safeTitle ? `<h2>${safeTitle}</h2>` : '',
         safeParagraph ? `<p>${safeParagraph}</p>` : '',
-        `<p><a href="${absoluteLink}" style="display:inline-block;padding:10px 16px;background:#111;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">Read more</a></p>`,
+        `<p><a href="${absoluteLink}">Read more</a></p>`,
       ];
       const contentHtml = contentHtmlParts.filter(Boolean).join('');
 
@@ -125,6 +126,10 @@ export async function GET(context) {
     title: 'ntemposd.me',
     description: 'Thoughts on product, tech, and building things',
     site: context.site,
+    xmlns: {
+      atom: 'http://www.w3.org/2005/Atom',
+    },
+    customData: `<atom:link href="${feedUrl}" rel="self" type="application/rss+xml" />`,
     items,
   });
 }
