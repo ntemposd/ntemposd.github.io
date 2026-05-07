@@ -8,12 +8,12 @@ Personal website built with Astro, using Notion as a headless CMS.
 
 ## Overview
 
-This project implements a content pipeline:
+This project implements a Notion-powered content pipeline:
 
-- Content is created and managed in Notion  
-- Fetched via the Notion API  
-- Transformed into Markdown  
-- Compiled into a static site during build time  
+- Writing and structured content are managed in Notion
+- Posts and projects are transformed into Markdown
+- Experience and working data are synced into local JSON files
+- Astro compiles everything into a static site during build time
 
 ---
 
@@ -21,10 +21,10 @@ This project implements a content pipeline:
 
 A custom sync layer connects Notion to the site:
 
-- Fetches structured content from Notion databases  
-- Transforms Notion blocks into Markdown  
-- Downloads and caches assets locally  
-- Generates content collections for Astro  
+- Fetches structured content from Notion databases
+- Transforms Notion blocks into Markdown
+- Downloads and caches assets locally
+- Generates Astro content or local JSON data depending on the content type
 
 This allows Notion to act as a CMS while keeping the site fully static.
 
@@ -32,8 +32,9 @@ This allows Notion to act as a CMS while keeping the site fully static.
 
 ## ✨ Features
 
-- 📝 **Notion CMS** - Posts, projects, and experience sync from Notion databases via API
+- 📝 **Notion CMS** - Posts, projects, experience, and working data sync from Notion databases via API
 - 🖼️ **Image handling** - Downloads and caches images locally, preserves Notion captions as Markdown alt text
+- 💼 **About page data sync** - Latest experience renders with date ranges, and craftsmanship cards are populated from a dedicated Notion database
 - 🌓 **Dark mode** - System preference detection with manual toggle, persists to localStorage
 - 📱 **Responsive nav** - Mobile hamburger menu, desktop horizontal nav
 - 📧 **ButtonDown embed** - Newsletter subscription iframe on post pages
@@ -68,6 +69,7 @@ NOTION_SECRET=secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 NOTION_POSTS_DB_ID=your-posts-database-id
 NOTION_PROJECTS_DB_ID=your-projects-database-id
 NOTION_EXPERIENCE_DB_ID=your-experience-database-id
+NOTION_WORKING_DB_ID=your-working-database-id
 
 # Optional: customize date property name
 NOTION_POSTS_DATE_PROP=Date
@@ -82,9 +84,10 @@ PUBLIC_GA_ID=G-XXXXXXXXXX
 
 ### 3. Set Up Notion Databases
 
-Create three Notion databases with the following structures:
+Create four Notion databases with the following structures:
 
 #### Posts Database
+
 - `Title` (title)
 - `Published` (checkbox) or `Status` (select: "Published")
 - `Date` (date)
@@ -94,6 +97,7 @@ Create three Notion databases with the following structures:
 - `Image` (files or URL, optional)
 
 #### Projects Database
+
 - `Name` (title)
 - `Type` (select)
 - `Published` (checkbox)
@@ -103,12 +107,20 @@ Create three Notion databases with the following structures:
 - `Image` (files or URL)
 
 #### Experience Database
+
 - `Role` (title)
 - `Company` (text)
 - `Start` (date)
 - `End` (date, optional - leave empty for current)
 - `Description` (text)
 - `Location` (text, optional)
+
+#### Working Database
+
+- `Skill` (title or text)
+- `Tools` (multi-select preferred, rich text also supported)
+- `Description` (text)
+- `Order` (number, optional)
 
 ### 4. Get Notion API Credentials
 
@@ -137,7 +149,8 @@ myastro/
 ├── scripts/    # Notion sync scripts
 │   ├── sync-posts.ts
 │   ├── sync-projects.ts
-│   └── sync-experience.ts
+│   ├── sync-experience.ts
+│   └── sync-working.ts
 ├── src/
 │   ├── assets/    # Bundled images (hashed in prod)
 │   │   ├── posts/
@@ -150,6 +163,8 @@ myastro/
 │   │   ├── posts/    # Synced from Notion
 │   │   ├── projects/
 │   │   └── experience/
+│   ├── data/
+│   │   └── working/    # Synced JSON used by the about page craftsmanship section
 │   ├── layouts/
 │   │   └── Layout.astro    # Base layout with SEO
 │   ├── pages/
@@ -168,15 +183,16 @@ myastro/
 
 ## 🧞 Commands
 
-| Command                | Action                                              |
-|:-----------------------|:----------------------------------------------------|
-| `npm install`          | Install dependencies                                |
-| `npm run dev`          | Start dev server + sync content                     |
-| `npm run build`        | Build production site + sync content                |
-| `npm run preview`      | Preview production build locally                    |
-| `npm run sync:content` | Sync all content from Notion                        |
-| `npm run sync:posts`   | Sync posts only                                     |
-| `npm run format`       | Format code with Prettier                           |
+| Command                | Action                               |
+| :--------------------- | :----------------------------------- |
+| `npm install`          | Install dependencies                 |
+| `npm run dev`          | Start dev server + sync content      |
+| `npm run build`        | Build production site + sync content |
+| `npm run preview`      | Preview production build locally     |
+| `npm run sync:content` | Sync all content from Notion         |
+| `npm run sync:posts`   | Sync posts only                      |
+| `npm run sync:working` | Sync working/craftsmanship data only |
+| `npm run format`       | Format code with Prettier            |
 
 ---
 
@@ -189,11 +205,12 @@ npm run sync:content
 ```
 
 **How it works:**
-1. Fetches published entries from Notion databases via API
-2. Downloads images to `src/assets/posts/` and `public/posts/`
-3. Converts Notion blocks to Markdown using `notion-to-md`
-4. Generates frontmatter from database properties
-5. Writes `.md` files to `src/content/posts/`
+
+1. Fetches entries from the posts, projects, experience, and working Notion databases via API
+2. Downloads post and project images to `src/assets/...` and `public/posts/`
+3. Converts post content blocks to Markdown using `notion-to-md`
+4. Writes Markdown content to `src/content/posts/` and `src/content/projects/`
+5. Writes ordered JSON data to `src/content/experience/_ordered.json` and `src/data/working/_ordered.json`
 
 **Note:** Image captions from Notion sync as Markdown alt text (`![caption](url)`). The `public/posts/` copy prevents 404s during development before client-side URL rewriting kicks in.
 
@@ -204,6 +221,7 @@ npm run sync:content
 ### Update Site Metadata
 
 Edit `src/layouts/Layout.astro` to change:
+
 - Site title and description
 - Open Graph images
 - Google Analytics ID
@@ -237,6 +255,7 @@ Automatically deploys to GitHub Pages on push to `main` via `.github/workflows/d
 - `NOTION_POSTS_DB_ID`
 - `NOTION_PROJECTS_DB_ID`
 - `NOTION_EXPERIENCE_DB_ID`
+- `NOTION_WORKING_DB_ID`
 - `PUBLIC_GA_ID` (optional)
 
 ### GitHub Repository Variables (Settings → Environments → github-pages → Variables)

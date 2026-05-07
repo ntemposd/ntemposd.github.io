@@ -1,0 +1,64 @@
+[
+  {
+    "skill": "Turning data into decisions",
+    "tools": [
+      "SQL",
+      "Plotly",
+      "Sheets"
+    ],
+    "description": "Designing data pipelines and feedback loops that turn raw information into clear, actionable product decisions.",
+    "order": 1
+  },
+  {
+    "skill": "Systems & integrations",
+    "tools": [
+      "API",
+      "Webhooks",
+      "Sockets",
+      "SDK"
+    ],
+    "description": "Connecting platforms through well-defined APIs, events, and automation to reduce friction and increase reliability.",
+    "order": 2
+  },
+  {
+    "skill": "Documentation that guides",
+    "tools": [
+      "Notion",
+      "Jira",
+      "Aha",
+      "Docs"
+    ],
+    "description": "Writing structured documentation that clarifies intent, reduces ambiguity, and helps teams move faster with confidence.",
+    "order": 3
+  },
+  {
+    "skill": "Automation and AI",
+    "tools": [
+      "LLMs",
+      "RAG",
+      "Python"
+    ],
+    "description": "Applying automation and AI thoughtfully to remove repetitive work while preserving human judgment where it matters.",
+    "order": 4
+  },
+  {
+    "skill": "Advocating for UX",
+    "tools": [
+      "Figma",
+      "Balsamiq",
+      "GA4"
+    ],
+    "description": "Championing user experience by translating research and feedback into flows that feel simple, coherent, and purposeful.",
+    "order": 5
+  },
+  {
+    "skill": "Collaborative Execution",
+    "tools": [
+      "Agile",
+      "Scrum",
+      "Kanban"
+    ],
+    "description": "Delivering through structured collaboration, aligning stakeholders early and iterating with clarity and shared ownership.",
+    "order": 6
+  }
+]

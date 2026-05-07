@@ -4,9 +4,10 @@
   "version": "0.0.1",
   "scripts": {
     "sync:experience": "tsx scripts/sync-experience.ts",
+    "sync:working": "tsx scripts/sync-working.ts",
     "sync:posts": "tsx scripts/sync-posts.ts",
     "sync:projects": "tsx scripts/sync-projects.ts",
-    "sync:content": "npm run sync:experience && npm run sync:posts && npm run sync:projects",
+    "sync:content": "npm run sync:experience && npm run sync:working && npm run sync:posts && npm run sync:projects",
     "dev": "npm run sync:content && astro dev",
     "build": "npm run sync:content && astro build",
     "preview": "astro preview",
