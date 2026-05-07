@@ -6,7 +6,7 @@
       "Plotly",
       "Sheets"
     ],
-    "description": "Designing data pipelines and feedback loops that turn raw information into clear, actionable product decisions.",
+    "description": "Designing feedback loops that turn raw data into clear, actionable product decisions.",
     "order": 1
   },
   {
@@ -17,7 +17,7 @@
       "Sockets",
       "SDK"
     ],
-    "description": "Connecting platforms through well-defined APIs, events, and automation to reduce friction and increase reliability.",
+    "description": "Connecting platforms through well-defined APIs, events, and automation to reduce friction.",
     "order": 2
   },
   {
@@ -28,7 +28,7 @@
       "Aha",
       "Docs"
     ],
-    "description": "Writing structured documentation that clarifies intent, reduces ambiguity, and helps teams move faster with confidence.",
+    "description": "Writing structured docs that clarify intent and help teams move faster with confidence.",
     "order": 3
   },
   {
@@ -38,7 +38,7 @@
       "RAG",
       "Python"
     ],
-    "description": "Applying automation and AI thoughtfully to remove repetitive work while preserving human judgment where it matters.",
+    "description": "Applying LLMs and automation to remove repetitive work while preserving human judgment.",
     "order": 4
   },
   {
@@ -48,7 +48,7 @@
       "Balsamiq",
       "GA4"
     ],
-    "description": "Championing user experience by translating research and feedback into flows that feel simple, coherent, and purposeful.",
+    "description": "Translating research and feedback into flows that feel simple, coherent, and purposeful.",
     "order": 5
   },
   {
@@ -58,7 +58,7 @@
       "Scrum",
       "Kanban"
     ],
-    "description": "Delivering through structured collaboration, aligning stakeholders early and iterating with clarity and shared ownership.",
+    "description": "Aligning stakeholders early and iterating with clarity and shared ownership.",
     "order": 6
   }
 ]
