@@ -1,6 +1,6 @@
 ---
 title: "Exhumed"
-type: "Products"
+type: "Experiments"
 blurb: "A FastAPI multi-agent framework orchestrating asynchronous LLM debates between historical personas."
 tags: ["FastAPI", "Streamlit", "Upstash", "Lamma-3"]
 link: "https://github.com/ntemposd/exhumed"

@@ -2,7 +2,7 @@
 title: "Schematch"
 type: "Experiments"
 blurb: "Lightweight API contract validator with AI-powered debugging that checks JSON responses against an expected schema."
-tags: ["n8n", "OpenAI", "API"]
+tags: ["OpenAI", "API"]
 link: "https://github.com/ntemposd/schematch"
 image: "/projects/schematch.png"
 order: 12
