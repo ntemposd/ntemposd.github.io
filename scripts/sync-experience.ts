@@ -3,6 +3,7 @@ import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Client } from '@notionhq/client';
+import { cleanupSyncTmp, commitStagedDirs, skipIfNotionUnconfigured, stageDir } from './sync-fs.ts';
 
 const EXP_DB_RAW = process.env.NOTION_EXPERIENCE_DB_ID ?? process.env.NOTION_EXPERIENCE_DB ?? null;
 const EXP_DS_RAW = process.env.NOTION_EXPERIENCE_DATA_SOURCE_ID ?? null;
@@ -48,7 +49,7 @@ async function databasesQueryAll(database_id: string) {
 function readTitle(props: any) { const k = Object.keys(props).find((x)=>props[x]?.type==='title'); return k ? plain(props[k].title) : ''; }
 
 (async () => {
-  if (!process.env.NOTION_SECRET && !process.env.NOTION_TOKEN) throw new Error('NOTION_SECRET/NOTION_TOKEN is missing');
+  if (skipIfNotionUnconfigured('sync-experience')) return;
 
   // Prefer explicit DS id; else resolve from DB; else DB query
   let src: { kind: 'ds' | 'db'; id: string } | null = null;
@@ -107,18 +108,18 @@ function readTitle(props: any) { const k = Object.keys(props).find((x)=>props[x]
     return (toMs(b.dateKey) - toMs(a.dateKey));
   });
 
-  // clean dir
-  for (const f of await fs.readdir(OUT_DIR).catch(() => [] as string[])) {
-    await fs.unlink(path.join(OUT_DIR, f)).catch(()=>{});
+  try {
+    const stage = await stageDir('experience');
+    for (let i = 0; i < items.length; i++) {
+      const it = items[i];
+      const filename = `${String(i + 1).padStart(3, '0')}-${it.slug}.json`;
+      await fs.writeFile(path.join(stage, filename), JSON.stringify(it.data, null, 2), 'utf8');
+    }
+    await fs.writeFile(path.join(stage, '_ordered.json'), JSON.stringify(items.map((x) => x.data), null, 2), 'utf8');
+    await commitStagedDirs([{ targetDir: OUT_DIR, stagedDir: stage }]);
+  } finally {
+    await cleanupSyncTmp();
   }
-
-  // write numbered json + _ordered.json
-  for (let i = 0; i < items.length; i++) {
-    const it = items[i];
-    const filename = `${String(i + 1).padStart(3, '0')}-${it.slug}.json`;
-    await fs.writeFile(path.join(OUT_DIR, filename), JSON.stringify(it.data, null, 2), 'utf8');
-  }
-  await fs.writeFile(path.join(OUT_DIR, '_ordered.json'), JSON.stringify(items.map(x => x.data), null, 2), 'utf8');
 
   console.log(`✓ Experience: ${items.length} → ${OUT_DIR}`);
 })().catch((e) => { console.error(e); process.exit(1); });

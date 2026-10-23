@@ -4,6 +4,14 @@ import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Client } from '@notionhq/client';
+import {
+  cleanupSyncTmp,
+  commitStagedDirs,
+  copyPreserved,
+  keepUnlessReplacedMarkdown,
+  skipIfNotionUnconfigured,
+  stageDir,
+} from './sync-fs.ts';
 
 const PROJ_DB_RAW = process.env.NOTION_PROJECTS_DB_ID ?? null;
 const notion = new Client({ auth: process.env.NOTION_SECRET ?? process.env.NOTION_TOKEN });
@@ -139,23 +147,20 @@ function extFromUrl(url: string) {
   const m = url.split('?')[0].match(/\.(png|jpe?g|webp|avif|svg|gif)$/i);
   return m ? m[1].toLowerCase().replace('jpeg','jpg') : '';
 }
-async function downloadToAssets(url: string, filenameBase: string) {
-  await ensureDir(ASSETS_DIR);
+async function downloadToAssets(url: string, filenameBase: string, destDir: string) {
+  await ensureDir(destDir);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed ${res.status} ${res.statusText} for ${url}`);
   const buf = Buffer.from(await res.arrayBuffer());
   const ext = extFromContentType(res.headers.get('content-type')) || extFromUrl(url) || 'bin';
   const file = `${filenameBase}.${ext}`;
-  await fs.writeFile(path.join(ASSETS_DIR, file), buf);
+  await fs.writeFile(path.join(destDir, file), buf);
   return file; // filename only
 }
 
 // ---------- main ----------
 (async () => {
-  if (!process.env.NOTION_SECRET && !process.env.NOTION_TOKEN) {
-    console.error('NOTION_SECRET/NOTION_TOKEN is missing');
-    process.exit(1);
-  }
+  if (skipIfNotionUnconfigured('sync-projects')) return;
   const src = await resolveDbOrDs(PROJ_DB_RAW);
   console.log('Projects Source:', src ? `${src.kind.toUpperCase()} ${mask(src.id)}` : 'none');
   if (!src) { console.error('Set NOTION_PROJECTS_DB_ID'); process.exit(1); }
@@ -166,22 +171,7 @@ async function downloadToAssets(url: string, filenameBase: string) {
     ? (await dataSourcesQueryAll(src.id)).filter(isActive)
     : (await databasesQueryAll(src.id, { /* optional server filter */ })).filter(isActive);
 
-  await ensureDir(PROJECTS_OUT);
-  await ensureDir(ASSETS_DIR);
-
-  // HARD CLEAN content: remove all .md/.mdx except protected
-  const existing = await fs.readdir(PROJECTS_OUT).catch(() => [] as string[]);
-  let removed = 0;
-  for (const f of existing) {
-    const lower = f.toLowerCase();
-    if ((lower.endsWith('.md') || lower.endsWith('.mdx')) && !PROTECTED.has(f)) {
-      await fs.unlink(path.join(PROJECTS_OUT, f)).catch(()=>{});
-      removed++;
-    }
-  }
-  console.log(`Cleaned projects content: removed ${removed} old file(s).`);
-
-  // Build items + track which asset files to keep
+  // Build items, then swap the live folders in only after every download has finished.
   type Item = {
     slug: string;
     data: {
@@ -196,71 +186,72 @@ async function downloadToAssets(url: string, filenameBase: string) {
       notionId: string;
     };
   };
-  const items: Item[] = [];
-  const keepAssets = new Set<string>();
+  let syncedProjects = 0;
+  try {
+    const stageProjects = await stageDir('projects');
+    const stageAssets = await stageDir('project-assets');
+    const items: Item[] = [];
 
-  for (const page of pages) {
-    const p = page.properties ?? {};
-    const title = readTitle(p) || '(Untitled)';
-    const slugProp = p.Slug?.type === 'rich_text' ? plain(p.Slug.rich_text) : '';
-    const slug = slugProp || slugify(title);
-    const type = readSingleValue(p.Type ?? p.type) || undefined;
+    for (const page of pages) {
+      const p = page.properties ?? {};
+      const title = readTitle(p) || '(Untitled)';
+      const slugProp = p.Slug?.type === 'rich_text' ? plain(p.Slug.rich_text) : '';
+      const slug = slugProp || slugify(title);
+      const type = readSingleValue(p.Type ?? p.type) || undefined;
 
-    const blurb =
-      p.Blurb?.type === 'rich_text' ? plain(p.Blurb.rich_text)
-      : p.Description?.type === 'rich_text' ? plain(p.Description.rich_text)
-      : '';
+      const blurb =
+        p.Blurb?.type === 'rich_text' ? plain(p.Blurb.rich_text)
+        : p.Description?.type === 'rich_text' ? plain(p.Description.rich_text)
+        : '';
 
-    const tags = p.Tags?.type === 'multi_select' ? p.Tags.multi_select.map((t: any) => t.name) : [];
+      const tags = p.Tags?.type === 'multi_select' ? p.Tags.multi_select.map((t: any) => t.name) : [];
 
-    const link =
-      p.Link?.type === 'url' && p.Link.url ? p.Link.url
-      : p.URL?.type === 'url' && p.URL.url ? p.URL.url
-      : '';
+      const link =
+        p.Link?.type === 'url' && p.Link.url ? p.Link.url
+        : p.URL?.type === 'url' && p.URL.url ? p.URL.url
+        : '';
 
-    const rawUrl = getImagePropUrl(p) ?? getCoverUrl(page);
-    let imageFile: string | undefined;
-    if (rawUrl) {
-      imageFile = await downloadToAssets(rawUrl, slug);           // -> src/assets/projects/<slug>.<ext>
-      keepAssets.add(imageFile);
+      const rawUrl = getImagePropUrl(p) ?? getCoverUrl(page);
+      let imageFile: string | undefined;
+      if (rawUrl) {
+        imageFile = await downloadToAssets(rawUrl, slug, stageAssets); // -> staged <slug>.<ext>
+      }
+
+      const order = p.Order?.type === 'number' && typeof p.Order.number === 'number' ? p.Order.number : 0;
+      const draft = p.Draft?.type === 'checkbox' ? !!p.Draft.checkbox : false;
+
+      items.push({
+        slug,
+        data: {
+          title,
+          type,
+          blurb,
+          tags,
+          link,
+          image: imageFile ? `/projects/${imageFile}` : undefined,   // frontmatter hint; page resolves by basename
+          order,                                                      // << include order in frontmatter
+          draft,
+          notionId: page.id,
+        },
+      });
     }
 
-    const order = p.Order?.type === 'number' && typeof p.Order.number === 'number' ? p.Order.number : 0;
-    const draft = p.Draft?.type === 'checkbox' ? !!p.Draft.checkbox : false;
-
-    items.push({
-      slug,
-      data: {
-        title,
-        type,
-        blurb,
-        tags,
-        link,
-        image: imageFile ? `/projects/${imageFile}` : undefined,   // frontmatter hint; page resolves by basename
-        order,                                                      // << include order in frontmatter
-        draft,
-        notionId: page.id,
-      },
-    });
-  }
-
-  // PRUNE ASSETS not referenced
-  const assetFiles = await fs.readdir(ASSETS_DIR).catch(() => [] as string[]);
-  let removedAssets = 0;
-  for (const f of assetFiles) {
-    if (!keepAssets.has(f)) {
-      await fs.unlink(path.join(ASSETS_DIR, f)).catch(()=>{});
-      removedAssets++;
+    // WRITE frontmatter-only MD (low order first to match your page sorting)
+    for (const it of items.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))) {
+      const file = path.join(stageProjects, `${it.slug}.md`);
+      await fs.writeFile(file, fm(it.data) + '\n', 'utf8');
+      console.log('✓ Project:', path.join(PROJECTS_OUT, `${it.slug}.md`));
     }
-  }
-  if (removedAssets) console.log(`Pruned project assets: removed ${removedAssets} file(s).`);
 
-  // WRITE frontmatter-only MD (low order first to match your page sorting)
-  for (const it of items.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0))) {
-    const file = path.join(PROJECTS_OUT, `${it.slug}.md`);
-    await fs.writeFile(file, fm(it.data) + '\n', 'utf8');
-    console.log('✓ Project:', file);
+    await copyPreserved(PROJECTS_OUT, stageProjects, keepUnlessReplacedMarkdown(PROTECTED));
+    await commitStagedDirs([
+      { targetDir: PROJECTS_OUT, stagedDir: stageProjects },
+      { targetDir: ASSETS_DIR, stagedDir: stageAssets },
+    ]);
+    syncedProjects = items.length;
+  } finally {
+    await cleanupSyncTmp();
   }
 
-  console.log(`✓ Projects: ${items.length} → ${PROJECTS_OUT}  (assets in ${ASSETS_DIR})`);
+  console.log(`✓ Projects: ${syncedProjects} → ${PROJECTS_OUT}  (assets in ${ASSETS_DIR})`);
 })().catch((e) => { console.error(e); process.exit(1); });
