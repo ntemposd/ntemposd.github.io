@@ -65,26 +65,13 @@ const ogDesc = entry?.data?.excerpt ?? description;
         } catch {}
       })();
     </script>
-    
-    {GA_ID && (
-      <>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}></script>
-        <script is:inline define:vars={{ GA_ID }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', GA_ID);
-        </script>
-      </>
-    )}
   </head>
 
   <body class="bg-white text-gray-900">
     <!-- Dotted background overlay -->
     <div class="dots-overlay" aria-hidden="true"></div>
 
-    <!-- Analytics Banner -->
-    <AnalyticsBanner />
+    {GA_ID && <AnalyticsBanner gaId={GA_ID} />}
 
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-gray-200">
@@ -158,7 +145,22 @@ const ogDesc = entry?.data?.excerpt ?? description;
 
     <!-- Footer -->
     <footer class="border-t border-gray-200 py-6 text-center text-sm text-gray-500">
-      © {new Date().getFullYear()} ntemposd · Built with <a href="https://astro.build" class="underline hover:text-gray-700">Astro</a> & <a href="https://notion.com" class="underline hover:text-gray-700">Notion</a> · <a href="/links" class="underline hover:text-gray-700">Links</a>
+      © {new Date().getFullYear()} ntemposd · Built with <a href="https://astro.build" class="underline hover:text-gray-700">Astro</a> & <a href="https://notion.com" class="underline hover:text-gray-700">Notion</a> · <a href="/links" class="underline hover:text-gray-700">Links</a>{
+        GA_ID && (
+          <>
+            {' '}·{' '}
+            <button
+              type="button"
+              id="cookie-settings"
+              class="cursor-pointer underline hover:text-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded-sm"
+              aria-controls="analytics-banner"
+              aria-expanded="false"
+            >
+              Cookie settings
+            </button>
+          </>
+        )
+      }
     </footer>
 
     <!-- Scripts -->
