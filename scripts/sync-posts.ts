@@ -4,6 +4,14 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Client } from '@notionhq/client';
 import { NotionToMarkdown } from 'notion-to-md';
+import {
+  cleanupSyncTmp,
+  commitStagedDirs,
+  copyPreserved,
+  keepUnlessReplacedMarkdown,
+  skipIfNotionUnconfigured,
+  stageDir,
+} from './sync-fs.ts';
 
 const POSTS_DB_RAW = process.env.NOTION_POSTS_DB_ID ?? null;
 const POST_DATE_PROP = process.env.NOTION_POSTS_DATE_PROP ?? 'Date';
@@ -134,14 +142,14 @@ function extFromUrl(url: string) {
   const m = url.split('?')[0].match(/\.(png|jpe?g|webp|avif|svg|gif)$/i);
   return m ? m[1].toLowerCase().replace('jpeg','jpg') : '';
 }
-async function downloadToAssets(url: string, filenameBase: string) {
-  await ensureDir(ASSETS_DIR);
+async function downloadToAssets(url: string, filenameBase: string, destDir: string) {
+  await ensureDir(destDir);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Download failed ${res.status} ${res.statusText} for ${url}`);
   const buf = Buffer.from(await res.arrayBuffer());
   const ext = extFromContentType(res.headers.get('content-type')) || extFromUrl(url) || 'bin';
   const file = `${filenameBase}.${ext}`;
-  await fs.writeFile(path.join(ASSETS_DIR, file), buf);
+  await fs.writeFile(path.join(destDir, file), buf);
   return file; // filename only
 }
 
@@ -209,9 +217,7 @@ function pickPostDateStrict(props: any, page: any, title: string) {
 
 // ---------- main ----------
 (async () => {
-  if (!process.env.NOTION_SECRET && !process.env.NOTION_TOKEN) {
-    console.error('NOTION_SECRET/NOTION_TOKEN is missing'); process.exit(1);
-  }
+  if (skipIfNotionUnconfigured('sync-posts')) return;
   const src = await resolveDbOrDs(POSTS_DB_RAW);
   console.log('Posts Source:', src ? `${src.kind.toUpperCase()} ${mask(src.id)}` : 'none');
   if (!src) { console.error('Set NOTION_POSTS_DB_ID'); process.exit(1); }
@@ -232,22 +238,6 @@ function pickPostDateStrict(props: any, page: any, title: string) {
   else pages = await databasesQueryAll(src.id, {
     filter: { or: [{ property: 'Published', checkbox: { equals: true } }, { property: 'Status', select: { equals: 'Published' } }] }
   });
-
-  await ensureDir(POSTS_OUT);
-  await ensureDir(ASSETS_DIR);
-  await ensureDir(PUBLIC_POSTS_DIR);
-
-  // HARD CLEAN content: remove all .md/.mdx except protected
-  const existing = await fs.readdir(POSTS_OUT).catch(() => [] as string[]);
-  let removed = 0;
-  for (const f of existing) {
-    const lower = f.toLowerCase();
-    if ((lower.endsWith('.md') || lower.endsWith('.mdx')) && !PROTECTED.has(f)) {
-      await fs.unlink(path.join(POSTS_OUT, f)).catch(()=>{});
-      removed++;
-    }
-  }
-  console.log(`Cleaned posts content: removed ${removed} old file(s).`);
 
   type Item = {
     id: string;
@@ -286,104 +276,103 @@ function pickPostDateStrict(props: any, page: any, title: string) {
     return `\n<div class="notion-columns">\n\n${inner}\n\n</div>\n`;
   });
 
-  const items: Item[] = [];
+  let syncedPosts = 0;
+  try {
+    const stagePosts = await stageDir('posts');
+    const stageAssets = await stageDir('post-assets');
+    const items: Item[] = [];
 
-  for (const p of pages) {
-    const props = p.properties ?? {};
-    const title = readTitle(props) || '(Untitled)';
-    const slugProp = props.Slug?.type === 'rich_text' ? plain(props.Slug.rich_text) : '';
-    const slug = slugProp || slugify(title);
-    const excerpt = props.Excerpt?.type === 'rich_text' ? plain(props.Excerpt.rich_text) : undefined;
-    const tags = props.Tags?.type === 'multi_select' ? props.Tags.multi_select.map((x: any) => x.name) : [];
-    const date = pickPostDateStrict(props, p, title);
+    for (const p of pages) {
+      const props = p.properties ?? {};
+      const title = readTitle(props) || '(Untitled)';
+      const slugProp = props.Slug?.type === 'rich_text' ? plain(props.Slug.rich_text) : '';
+      const slug = slugProp || slugify(title);
+      const excerpt = props.Excerpt?.type === 'rich_text' ? plain(props.Excerpt.rich_text) : undefined;
+      const tags = props.Tags?.type === 'multi_select' ? props.Tags.multi_select.map((x: any) => x.name) : [];
+      const date = pickPostDateStrict(props, p, title);
 
-    // cover/image property → src/assets/posts/<slug>.<ext>
-    const imgProp = getImagePropUrl(props);
-    const coverRaw = getCoverUrl(p);
-    const raw = imgProp ?? coverRaw;
-    let coverFile: string | undefined;
-    if (raw) coverFile = await downloadToAssets(raw, slug); // filename only
+      // cover/image property → src/assets/posts/<slug>.<ext>
+      const imgProp = getImagePropUrl(props);
+      const coverRaw = getCoverUrl(p);
+      const raw = imgProp ?? coverRaw;
+      let coverFile: string | undefined;
+      if (raw) coverFile = await downloadToAssets(raw, slug, stageAssets); // filename only
 
-    // page content → markdown
-    const blocks = await n2m.pageToMarkdown(p.id);
-    const mdObj: any = n2m.toMarkdownString(blocks);
-    let md = typeof mdObj === 'string' ? mdObj : mdObj?.parent ?? '';
+      // page content → markdown
+      const blocks = await n2m.pageToMarkdown(p.id);
+      const mdObj: any = n2m.toMarkdownString(blocks);
+      let md = typeof mdObj === 'string' ? mdObj : mdObj?.parent ?? '';
 
-    // Transform callout blockquotes to styled HTML
-    md = transformCallouts(md);
+      // Transform callout blockquotes to styled HTML
+      md = transformCallouts(md);
 
-    // inline images in MD → download & rewrite
-    const inlineUrls = collectImageUrlsFromMarkdown(md);
-    const rewriteMap: Record<string, string> = {};
-    let imgIndex = 1;
-    for (const u of inlineUrls) {
-      if (!/^https?:\/\//i.test(u)) continue; // already local or relative
-      const file = await downloadToAssets(u, `${slug}-img${imgIndex++}`);
-      rewriteMap[u] = `/posts/${file}`;
+      // inline images in MD → download & rewrite
+      const inlineUrls = collectImageUrlsFromMarkdown(md);
+      const rewriteMap: Record<string, string> = {};
+      let imgIndex = 1;
+      for (const u of inlineUrls) {
+        if (!/^https?:\/\//i.test(u)) continue; // already local or relative
+        const file = await downloadToAssets(u, `${slug}-img${imgIndex++}`, stageAssets);
+        rewriteMap[u] = `/posts/${file}`;
+      }
+      if (Object.keys(rewriteMap).length) {
+        md = replaceMarkdownUrls(md, rewriteMap);
+      }
+
+      items.push({
+        id: p.id,
+        slug,
+        title,
+        date,
+        excerpt,
+        tags,
+        image: coverFile ? `/posts/${coverFile}` : undefined,
+        md,
+      });
     }
-    if (Object.keys(rewriteMap).length) {
-      md = replaceMarkdownUrls(md, rewriteMap);
+
+    // write markdown files (newest first) into the stage dir
+    for (const it of items.sort((a, b) => (a.date < b.date ? 1 : -1))) {
+      const fmData: Record<string, any> = {
+        title: it.title,
+        date: it.date,                 // "YYYY-MM-DD"
+        excerpt: it.excerpt,
+        tags: it.tags,
+        draft: false,
+        notionId: it.id,
+      };
+      if (it.image) fmData.image = it.image;
+
+      const file = path.join(stagePosts, `${it.slug}.md`);
+      await fs.writeFile(file, fm(fmData) + '\n' + it.md + '\n', 'utf8');
+      console.log('✓ Post:', path.join(POSTS_OUT, `${it.slug}.md`));
     }
 
-    items.push({
-      id: p.id,
-      slug,
-      title,
-      date,
-      excerpt,
-      tags,
-      image: coverFile ? `/posts/${coverFile}` : undefined,
-      md,
-    });
+    await copyPreserved(POSTS_OUT, stagePosts, keepUnlessReplacedMarkdown(PROTECTED));
+    // Assets dir is the full new set, which is the old prune step. Swap content first
+    // so a failed asset swap restores the previous posts.
+    await commitStagedDirs([
+      { targetDir: POSTS_OUT, stagedDir: stagePosts },
+      { targetDir: ASSETS_DIR, stagedDir: stageAssets },
+    ]);
+    syncedPosts = items.length;
+  } finally {
+    await cleanupSyncTmp();
   }
 
-  // PRUNE ASSETS not referenced (keep cover files + inline files we just downloaded)
-  const keepAssets = new Set<string>();
-  for (const it of items) {
-    if (it.image) keepAssets.add(path.basename(it.image));
-    // collect inline asset filenames from rewritten MD
-    const urls = collectImageUrlsFromMarkdown(it.md);
-    for (const u of urls) {
-      if (u.startsWith('/posts/')) keepAssets.add(path.basename(u));
-    }
-  }
-  
-  // Copy assets to public/posts for dev server (avoid 404s)
+  // Copy assets to public/posts for dev server (avoid 404s). Old public files are left in place.
   await ensureDir(PUBLIC_POSTS_DIR);
-  for (const f of keepAssets) {
+  const publishedAssets = await fs.readdir(ASSETS_DIR).catch(() => [] as string[]);
+  let copied = 0;
+  for (const f of publishedAssets) {
     const src = path.join(ASSETS_DIR, f);
     const dest = path.join(PUBLIC_POSTS_DIR, f);
+    const stat = await fs.stat(src).catch(() => null);
+    if (!stat?.isFile()) continue;
+    copied++;
     await fs.copyFile(src, dest).catch(() => {});
   }
-  console.log(`Copied ${keepAssets.size} asset(s) to ${PUBLIC_POSTS_DIR} for dev.`);
+  console.log(`Copied ${copied} asset(s) to ${PUBLIC_POSTS_DIR} for dev.`);
 
-  // Prune unused assets from src/assets/posts
-  const assetFiles = await fs.readdir(ASSETS_DIR).catch(() => [] as string[]);
-  let removedAssets = 0;
-  for (const f of assetFiles) {
-    if (!keepAssets.has(f)) {
-      await fs.unlink(path.join(ASSETS_DIR, f)).catch(()=>{});
-      removedAssets++;
-    }
-  }
-  if (removedAssets) console.log(`Pruned post assets: removed ${removedAssets} file(s).`);
-
-  // write markdown files (newest first)
-  for (const it of items.sort((a, b) => (a.date < b.date ? 1 : -1))) {
-    const fmData: Record<string, any> = {
-      title: it.title,
-      date: it.date,                 // "YYYY-MM-DD"
-      excerpt: it.excerpt,
-      tags: it.tags,
-      draft: false,
-      notionId: it.id,
-    };
-    if (it.image) fmData.image = it.image;
-
-    const file = path.join(POSTS_OUT, `${it.slug}.md`);
-    await fs.writeFile(file, fm(fmData) + '\n' + it.md + '\n', 'utf8');
-    console.log('✓ Post:', file);
-  }
-
-  console.log(`✓ Posts: ${items.length} → ${POSTS_OUT}  (assets in ${ASSETS_DIR})`);
+  console.log(`✓ Posts: ${syncedPosts} → ${POSTS_OUT}  (assets in ${ASSETS_DIR})`);
 })().catch((e) => { console.error(e); process.exit(1); });

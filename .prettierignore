@@ -8,3 +8,6 @@ coverage/
 
 # Optional local editor settings
 *.local
+
+# Notion sync staging
+.sync-tmp/

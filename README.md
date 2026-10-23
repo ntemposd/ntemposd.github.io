@@ -37,7 +37,7 @@ This allows Notion to act as a CMS while keeping the site fully static.
 - 💼 **About page data sync** - Latest experience renders with date ranges, and craftsmanship cards are populated from a dedicated Notion database
 - 🌓 **Dark mode** - System preference detection with manual toggle, persists to localStorage
 - 📱 **Responsive nav** - Mobile hamburger menu, desktop horizontal nav
-- 📧 **ButtonDown embed** - Newsletter subscription iframe on post pages
+- 📧 **ButtonDown form** - Newsletter subscription form on post pages
 - 🎨 **Tailwind CSS** - Responsive styling with typography plugin for prose content
 - 🔍 **SEO basics** - Sitemap generation and Open Graph meta tags
 
@@ -183,22 +183,22 @@ myastro/
 
 ## 🧞 Commands
 
-| Command                | Action                               |
-| :--------------------- | :----------------------------------- |
-| `npm install`          | Install dependencies                 |
-| `npm run dev`          | Start dev server + sync content      |
-| `npm run build`        | Build production site + sync content |
-| `npm run preview`      | Preview production build locally     |
-| `npm run sync:content` | Sync all content from Notion         |
-| `npm run sync:posts`   | Sync posts only                      |
-| `npm run sync:working` | Sync working/craftsmanship data only |
-| `npm run format`       | Format code with Prettier            |
+| Command                | Action                                                                  |
+| :--------------------- | :---------------------------------------------------------------------- |
+| `npm install`          | Install dependencies                                                    |
+| `npm run dev`          | Start the dev server. Syncs Notion first when credentials are set.      |
+| `npm run build`        | Build the production site. Syncs Notion first when credentials are set. |
+| `npm run preview`      | Preview production build locally                                        |
+| `npm run sync:content` | Sync all content from Notion                                            |
+| `npm run sync:posts`   | Sync posts only                                                         |
+| `npm run sync:working` | Sync working/craftsmanship data only                                    |
+| `npm run format`       | Format code with Prettier                                               |
 
 ---
 
 ## 🔄 Content Sync Workflow
 
-Content is automatically synced from Notion during `dev` and `build`. To manually sync:
+Content is synced from Notion during `dev` and `build` when a Notion token is set. To manually sync:
 
 ```bash
 npm run sync:content
@@ -213,6 +213,8 @@ npm run sync:content
 5. Writes ordered JSON data to `src/content/experience/_ordered.json` and `src/data/working/_ordered.json`
 
 **Note:** Image captions from Notion sync as Markdown alt text (`![caption](url)`). The `public/posts/` copy prevents 404s during development before client-side URL rewriting kicks in.
+
+If `NOTION_SECRET` and `NOTION_TOKEN` are both unset, each sync script prints a warning and leaves the committed files untouched, so the site still builds. When a token is set, a missing database id or a Notion error fails the command. Each sync writes its new files to a temporary directory and replaces the live folder only after that sync succeeds, so a failure cannot leave posts, projects, or data half deleted.
 
 ---
 
@@ -235,7 +237,7 @@ Edit `src/layouts/Layout.astro` to change:
 ### ButtonDown Integration
 
 1. Update your ButtonDown username in `src/components/MailingListSubscribe.astro`
-2. The embed iframe will load from `https://buttondown.com/api/emails/embed-subscribe/[username]`
+2. The subscribe form posts to `https://buttondown.com/api/emails/embed-subscribe/[username]`
 
 ---
 

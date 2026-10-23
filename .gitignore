@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# Notion sync staging (only present if a run is killed mid-swap)
+.sync-tmp/
+
 # macOS-specific files
 .DS_Store
 

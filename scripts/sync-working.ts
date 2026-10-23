@@ -2,6 +2,7 @@ import 'dotenv/config';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { Client } from '@notionhq/client';
+import { cleanupSyncTmp, commitStagedDirs, skipIfNotionUnconfigured, stageDir } from './sync-fs.ts';
 
 const WORKING_DB_RAW = process.env.NOTION_WORKING_DB_ID ?? process.env.NOTION_WORKING_DB ?? null;
 const WORKING_DS_RAW = process.env.NOTION_WORKING_DATA_SOURCE_ID ?? null;
@@ -81,7 +82,7 @@ function readTools(props: any) {
 }
 
 (async () => {
-  if (!process.env.NOTION_SECRET && !process.env.NOTION_TOKEN) throw new Error('NOTION_SECRET/NOTION_TOKEN is missing');
+  if (skipIfNotionUnconfigured('sync-working')) return;
 
   let src: { kind: 'ds' | 'db'; id: string } | null = null;
   if (WORKING_DS_RAW) {
@@ -130,11 +131,14 @@ function readTools(props: any) {
     })
     .sort((left, right) => left.order - right.order);
 
-  for (const file of await fs.readdir(OUT_DIR).catch(() => [] as string[])) {
-    await fs.unlink(path.join(OUT_DIR, file)).catch(() => {});
+  try {
+    const stage = await stageDir('working');
+    await fs.writeFile(path.join(stage, '_ordered.json'), JSON.stringify(items, null, 2), 'utf8');
+    await commitStagedDirs([{ targetDir: OUT_DIR, stagedDir: stage }]);
+  } finally {
+    await cleanupSyncTmp();
   }
 
-  await fs.writeFile(path.join(OUT_DIR, '_ordered.json'), JSON.stringify(items, null, 2), 'utf8');
   console.log(`✓ Working: ${items.length} → ${OUT_DIR}`);
 })().catch((error) => {
   console.error(error);
