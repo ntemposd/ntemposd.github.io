@@ -12,106 +12,138 @@ const { gaId } = Astro.props;
   hidden
 >
   <div class="analytics-content">
-    <p id="analytics-banner-text">
-      I use Google Analytics cookies for anonymous usage stats — which pages get read, not who you
-      are. You can say no.
-    </p>
+    <div class="analytics-text">
+      <p id="analytics-banner-text">
+        I use analytics and cookies to understand how you use my website and improve your experience.
+      </p>
+    </div>
     <div class="analytics-actions">
-      <button type="button" id="analytics-accept" aria-pressed="false">Accept</button>
-      <button type="button" id="analytics-reject" aria-pressed="false">Reject</button>
+      <button type="button" id="analytics-accept" class="btn-ok" aria-pressed="false">Accept</button>
+      <button type="button" id="analytics-reject" class="btn-ok" aria-pressed="false">Reject</button>
     </div>
   </div>
 </div>
 
 <style>
-  /*
-    Colors are for the light page. html.dark inverts the whole document, so the
-    banner flips with it and stays legible. Don't paint a second dark theme here
-    or it will invert again.
-  */
   .analytics-banner {
     position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    color: rgb(75, 85, 99);
+    padding: 1rem 1.5rem;
     z-index: 999;
-    left: 0;
-    right: 0;
-    bottom: 1rem;
-    width: min(42rem, calc(100% - 2rem));
-    margin-inline: auto;
-    padding: 1rem 1.1rem;
-    background: #fff;
-    color: rgb(55, 65, 81);
-    border: 1px solid rgb(156, 163, 175);
-    border-radius: 0.75rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(229, 231, 235, 0.5);
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    max-width: 90vw;
+    width: fit-content;
   }
 
-  .analytics-banner[hidden] {
+  .analytics-banner.hidden {
     display: none;
-  }
-
-  .analytics-banner:focus-visible {
-    outline: 2px solid rgb(17, 24, 39);
-    outline-offset: 3px;
   }
 
   .analytics-content {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 0.75rem 1rem;
+    align-items: center;
+    gap: 0.5rem;
   }
 
-  #analytics-banner-text {
-    margin: 0;
+  .analytics-text {
     flex: 1;
     font-size: 0.9rem;
-    line-height: 1.45;
-    color: rgb(55, 65, 81);
+    line-height: 1.4;
+  }
+
+  .analytics-text p {
+    margin: 0;
+    color: rgb(75, 85, 99);
   }
 
   .analytics-actions {
     display: flex;
-    flex-shrink: 0;
     gap: 0.5rem;
+    flex-shrink: 0;
   }
 
-  .analytics-actions button {
-    min-width: 6.5rem;
-    min-height: 2.75rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid rgb(107, 114, 128);
+  button {
+    padding: 0.4rem 0.875rem;
+    border: none;
     border-radius: 0.375rem;
-    background: #fff;
-    color: rgb(17, 24, 39);
-    font: inherit;
     font-size: 0.875rem;
-    font-weight: 600;
-    line-height: 1.2;
+    font-weight: 500;
     cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
   }
 
-  .analytics-actions button:hover {
-    background: rgb(243, 244, 246);
+  .btn-ok {
+    background-color: rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
   }
 
-  .analytics-actions button:focus-visible {
-    outline: 2px solid rgb(17, 24, 39);
-    outline-offset: 2px;
+  .btn-ok:hover {
+    background-color: rgb(209, 213, 219);
   }
 
-  .analytics-actions button[aria-pressed='true'] {
-    box-shadow: inset 0 0 0 1px rgb(17, 24, 39);
+  .btn-close {
+    background-color: rgb(243, 244, 246);
+    color: rgb(75, 85, 99);
+    border: none;
   }
 
-  @media (max-width: 640px) {
+  .btn-close:hover {
+    background-color: rgb(229, 231, 235);
+    color: rgb(55, 65, 81);
+  }
+
+  @media (max-width: 768px) {
+    .analytics-banner {
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      transform: none;
+      max-width: none;
+    }
+
     .analytics-content {
       flex-direction: column;
-      align-items: stretch;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .analytics-text {
+      font-size: 0.85rem;
+    }
+
+    .analytics-actions {
+      width: 100%;
     }
 
     .analytics-actions button {
       flex: 1;
     }
+  }
+
+  /* Dark mode - invert filter compat */
+  html.dark .analytics-banner {
+    background: rgb(31, 41, 55);
+    color: rgb(209, 213, 219);
+    border-color: rgba(255, 255, 255, 0.1);
+    filter: invert(1) hue-rotate(180deg) contrast(0.99);
+  }
+
+  html.dark .analytics-text p {
+    color: rgb(209, 213, 219);
+  }
+
+  html.dark .btn-ok,
+  html.dark .btn-close {
+    filter: invert(1) hue-rotate(180deg) contrast(0.99);
   }
 </style>
 
