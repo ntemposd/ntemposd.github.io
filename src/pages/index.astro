@@ -204,7 +204,7 @@ const normalizeProjectType = (value?: string) => {
               class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
                      shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
-              <div data-no-invert class="aspect-[6/3] overflow-hidden bg-gray-50">
+              <div data-no-invert class="relative aspect-[16/9] overflow-hidden bg-gray-50">
                 {resolved ? (
                   resolved.isSvg ? (
                     <img
@@ -213,7 +213,7 @@ const normalizeProjectType = (value?: string) => {
                       loading={eagerForIndex(gIdx)}
                       fetchpriority={priorityForIndex(gIdx)}
                       decoding="async"
-                      class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                      class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
                     />
                   ) : (
                     <Image
@@ -224,11 +224,11 @@ const normalizeProjectType = (value?: string) => {
                       loading={eagerForIndex(gIdx)}
                       fetchpriority={priorityForIndex(gIdx)}
                       decoding="async"
-                      class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                      class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
                     />
                   )
                 ) : (
-                  <div class="w-full h-full grid place-items-center text-gray-400 text-sm">No cover</div>
+                  <div class="absolute inset-0 grid place-items-center text-gray-400 text-sm">No cover</div>
                 )}
               </div>
 

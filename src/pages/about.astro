@@ -18,6 +18,7 @@ const experienceDates = (item) => {
 
 const cardBase = 'rounded-2xl bg-white border border-gray-100 overflow-hidden shadow-sm transition-all duration-300';
 const card = `${cardBase} hover:shadow-lg hover:-translate-y-1 p-5`;
+const plainText = (value) => (typeof value === 'string' ? value.trim() : '');
 ---
 
 <Layout
@@ -139,7 +140,7 @@ const card = `${cardBase} hover:shadow-lg hover:-translate-y-1 p-5`;
             <li key={(item.role || item.company) + i} class="relative flex gap-6">
               <!-- Timeline dot -->
               <div class="flex flex-col items-center">
-                <div class="w-3 h-3 bg-indigo-600 rounded-full shadow-lg shadow-indigo-300 flex-shrink-0 mt-2.5">
+                <div class="relative w-3 h-3 bg-indigo-600 rounded-full shadow-lg shadow-indigo-300 flex-shrink-0 mt-2.5">
                   {item.current && <div class="absolute inset-0 bg-indigo-600 rounded-full animate-ping opacity-75"></div>}
                 </div>
                 {i < experience.length - 1 && <div class="w-px h-20 bg-gradient-to-b from-indigo-200 to-indigo-50 mt-1"></div>}
@@ -152,7 +153,7 @@ const card = `${cardBase} hover:shadow-lg hover:-translate-y-1 p-5`;
 
                 <!-- Company info row -->
                 <div class="flex items-center gap-2">
-                  <p class="text-sm font-semibold text-indigo-600">{item.company}</p>
+                  {plainText(item.company) && <p class="text-sm font-semibold text-indigo-600">{plainText(item.company)}</p>}
                   {item.current && (
                     <span class="text-[10px] uppercase tracking-wide bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold">
                       Current
@@ -161,23 +162,23 @@ const card = `${cardBase} hover:shadow-lg hover:-translate-y-1 p-5`;
                 </div>
 
                 <!-- Date and location -->
-                {(item.start || item.location) && (
+                {(item.start || plainText(item.location)) && (
                   <p class="text-xs text-gray-400 mt-1">
                     {item.start && <span>{experienceDates(item)}</span>}
-                    {item.start && item.location && <span>{' · '}</span>}
-                    {item.location && <span>{item.location}</span>}
+                    {item.start && plainText(item.location) && <span>{' · '}</span>}
+                    {plainText(item.location) && <span>{plainText(item.location)}</span>}
                   </p>
                 )}
 
                 <!-- Description -->
-                {item.summary && (
-                  <p class="text-sm text-gray-600 mt-2 leading-relaxed whitespace-pre-line">{item.summary}</p>
+                {(plainText(item.summary) || plainText(item.description)) && (
+                  <p class="text-sm text-gray-600 mt-2 leading-relaxed whitespace-pre-line">{plainText(item.summary) || plainText(item.description)}</p>
                 )}
 
                 <!-- Tags -->
-                {item.tags?.length > 0 && (
+                {item.tags?.some((tag) => plainText(tag)) && (
                   <div class="flex flex-wrap gap-2 mt-1 pt-3 border-t border-gray-100/50">
-                    {item.tags.map((tag) => (
+                    {item.tags.filter((tag) => plainText(tag)).map((tag) => (
                       <span class="text-xs bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-md font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors cursor-default">{tag}</span>
                     ))}
                   </div>

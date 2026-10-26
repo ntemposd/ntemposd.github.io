@@ -24,8 +24,8 @@ function absUrl(maybeUrl: any) {
 // Prefer an explicit `ogImage` prop (absolute URL) if provided by a page. Otherwise
 // normalize the entry's image (if present) to an absolute URL.
 const ogImageUrl = ogImage ?? (entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null);
-const ogTitle = entry?.data?.title ?? title;
-const ogDesc = entry?.data?.excerpt ?? description;
+const ogTitle = title;
+const ogDesc = description;
 ---
 
 <!doctype html>
