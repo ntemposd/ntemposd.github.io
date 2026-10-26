@@ -45,7 +45,7 @@ const normTags = (tags: unknown) =>
 
 <Layout
   title="Essays — Dimitrios Ntempos"
-  description="Essays on product management, AI systems, startups, and building. Covering technical literacy, structural thinking, and lessons from practice."
+  description="Essays by Dimitrios Ntempos, a technical product manager working on integrations, data and AI. Notes on product, systems, and building."
 >
   <div class="flex items-center justify-between mb-10 flex-wrap gap-4">
     <div>
@@ -85,7 +85,7 @@ const normTags = (tags: unknown) =>
                    shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             data-no-invert
           >
-            <div class="aspect-[16/9] overflow-hidden bg-gray-50 relative">
+            <div class="relative aspect-[16/9] overflow-hidden bg-gray-50">
               {cover ? (
                 <Image
                   src={cover}
@@ -95,10 +95,10 @@ const normTags = (tags: unknown) =>
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"
-                  class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                  class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
                 />
               ) : (
-                <div class="w-full h-full grid place-items-center text-gray-400 text-sm">
+                <div class="absolute inset-0 grid place-items-center text-gray-400 text-sm">
                   No cover
                 </div>
               )}

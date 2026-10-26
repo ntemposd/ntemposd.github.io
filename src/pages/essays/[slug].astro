@@ -96,8 +96,8 @@ if (typeof rawCover === 'string') {
 ---
 
 <Layout
-  title={`${entry.data.title} — ntemposd`}
-  description={entry.data.excerpt ?? 'Essays on technology, product thinking, and the tech startup ecosystem.'}
+  title={`${entry.data.title} — Dimitrios Ntempos`}
+  description={(typeof entry.data.excerpt === 'string' && entry.data.excerpt.trim()) || 'An essay by Dimitrios Ntempos, a technical product manager working on integrations, data and AI, about product, systems, and building.'}
   entry={entry}
   ogImage={ogImage}
 >
@@ -124,11 +124,11 @@ if (typeof rawCover === 'string') {
 
     {/* Hero cover (Image component) */}
     {cover && (
-      <div class="aspect-[16/9] overflow-hidden rounded-2xl bg-gray-50 mb-6">
+      <div class="relative aspect-[16/9] overflow-hidden rounded-2xl bg-gray-50 mb-6">
         <Image
           src={cover}
           alt={entry.data.title}
-          class="w-full h-full object-cover"
+          class="absolute inset-0 h-full w-full object-cover"
           widths={[768, 1024, 1440]}
           sizes="(max-width: 1024px) 100vw, 1024px"
           loading="eager"
