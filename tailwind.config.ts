@@ -8,7 +8,23 @@ const config: Config = {
   darkMode: 'class', // ⬅️ you're already using this correctly
   theme: {
     extend: {
-      // You can customize here if needed later
+      typography: {
+        DEFAULT: {
+          css: {
+            blockquote: {
+              fontWeight: '400',
+              fontStyle: 'normal',
+              quotes: 'none',
+            },
+            'blockquote p:first-of-type::before': {
+              content: 'none',
+            },
+            'blockquote p:last-of-type::after': {
+              content: 'none',
+            },
+          },
+        },
+      },
     },
   },
   plugins: [
