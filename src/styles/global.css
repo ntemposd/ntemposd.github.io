@@ -255,3 +255,16 @@ html.dark .callout-default {
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Prose blockquotes stay italic with the left border.
+   Drop the medium weight and the generated quotation marks. */
+.prose blockquote {
+  font-style: italic;
+  font-weight: 400;
+  quotes: none;
+}
+
+.prose blockquote p::before,
+.prose blockquote p::after {
+  content: none;
+}
