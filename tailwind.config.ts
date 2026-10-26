@@ -13,7 +13,7 @@ const config: Config = {
           css: {
             blockquote: {
               fontWeight: '400',
-              fontStyle: 'normal',
+              fontStyle: 'italic',
               quotes: 'none',
             },
             'blockquote p:first-of-type::before': {
