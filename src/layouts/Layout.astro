@@ -32,11 +32,11 @@ function pageUrl() {
 }
 
 const canonical = pageUrl();
-// Explicit ogImage, then the entry image, then the site default. Always absolute.
+// Prefer an explicit `ogImage` prop (absolute URL) if provided by a page. Otherwise
+// normalize the entry's image (if present) to an absolute URL.
 const ogImageUrl =
   absUrl(ogImage) ??
-  (entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null) ??
-  absUrl('/og-default.png');
+  (entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null);
 const ogTitle = title;
 const ogDesc = description;
 const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : null;

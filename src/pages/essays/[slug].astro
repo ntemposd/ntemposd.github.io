@@ -108,7 +108,7 @@ const jsonLd = {
   headline: entry.data.title,
   description,
   datePublished: entry.data.date,
-  image: ogImage ?? new URL('/og-default.png', siteOrigin).toString(),
+  ...(ogImage ? { image: ogImage } : {}),
   author: {
     '@type': 'Person',
     name: 'Dimitrios Ntempos',
