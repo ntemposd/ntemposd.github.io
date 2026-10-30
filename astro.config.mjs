@@ -7,8 +7,15 @@ export default defineConfig({
   site: 'https://ntemposd.me', // ✅ Use your custom domain (not GitHub Pages)
   base: '/',                   // root
   output: 'static',
+  trailingSlash: 'always',
   integrations: [
     tailwind(),
-    sitemap(),                 // ✅ Adds automatic sitemap generation
+    sitemap({
+      // Legacy /writing/ pages are redirects. Keep them out of the sitemap.
+      filter: (page) => {
+        const { pathname } = new URL(page);
+        return pathname !== '/writing' && !pathname.startsWith('/writing/');
+      },
+    }),
   ],
 });

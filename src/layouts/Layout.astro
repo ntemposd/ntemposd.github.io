@@ -8,6 +8,8 @@ const {
   description = 'Dimitrios Ntempos is a technical product manager working on integrations, data and AI. Essays, side projects and notes from building.',
   entry = null,
   ogImage = null,
+  publishedTime = null,
+  jsonLd = null,
 } = Astro.props;
 
 const site = (Astro.site ?? Astro.url.origin).toString();
@@ -21,11 +23,23 @@ function absUrl(maybeUrl: any) {
   }
 }
 
-// Prefer an explicit `ogImage` prop (absolute URL) if provided by a page. Otherwise
-// normalize the entry's image (if present) to an absolute URL.
-const ogImageUrl = ogImage ?? (entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null);
+function pageUrl() {
+  const url = new URL(Astro.url.pathname, site);
+  if (!url.pathname.endsWith('/') && !/\.[^/]+$/.test(url.pathname)) {
+    url.pathname += '/';
+  }
+  return url.href;
+}
+
+const canonical = pageUrl();
+// Explicit ogImage, then the entry image, then the site default. Always absolute.
+const ogImageUrl =
+  absUrl(ogImage) ??
+  (entry?.data?.image ? absUrl(entry.data.image.src ?? entry.data.image) : null) ??
+  absUrl('/og-default.png');
 const ogTitle = title;
 const ogDesc = description;
+const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : null;
 ---
 
 <!doctype html>
@@ -37,19 +51,24 @@ const ogDesc = description;
     <meta name="description" content={description} />
     <title>{title}</title>
 
-    <link rel="canonical" href={Astro.url.href} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title="ntemposd.me" href={absUrl('/rss.xml')} />
 
     <!-- ✅ Open Graph / Twitter Meta -->
     <meta property="og:type" content={entry ? 'article' : 'website'} />
+    <meta property="og:site_name" content="Dimitrios Ntempos" />
     <meta property="og:title" content={ogTitle} />
     <meta property="og:description" content={ogDesc} />
-    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:url" content={canonical} />
     {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
 
     <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={ogTitle} />
     <meta name="twitter:description" content={ogDesc} />
     {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    {jsonLdText && <script is:inline type="application/ld+json" set:html={jsonLdText} />}
 
     <!-- ✅ Set dark mode class before first paint -->
     <script is:inline>
@@ -82,9 +101,9 @@ const ogDesc = description;
         <!-- Desktop nav -->
         <nav class="hidden md:flex items-center gap-6 text-sm">
           <a href="/" class="hover:underline">Home</a>
-          <a href="/essays" class="hover:underline">Essays</a>
-          <a href="/projects" class="hover:underline">Projects</a>
-          <a href="/about" class="hover:underline">About</a>
+          <a href="/essays/" class="hover:underline">Essays</a>
+          <a href="/projects/" class="hover:underline">Projects</a>
+          <a href="/about/" class="hover:underline">About</a>
         </nav>
 
         <!-- Controls: Theme toggle + mobile nav -->
@@ -131,9 +150,9 @@ const ogDesc = description;
       <nav id="mobile-nav" class="md:hidden hidden border-t border-gray-200 bg-white">
         <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-2 text-sm">
           <a href="/" class="py-2">Home</a>
-          <a href="/essays" class="py-2">Essays</a>
-          <a href="/projects" class="py-2">Projects</a>
-          <a href="/about" class="py-2">About</a>
+          <a href="/essays/" class="py-2">Essays</a>
+          <a href="/projects/" class="py-2">Projects</a>
+          <a href="/about/" class="py-2">About</a>
         </div>
       </nav>
     </header>
@@ -145,7 +164,7 @@ const ogDesc = description;
 
     <!-- Footer -->
     <footer class="border-t border-gray-200 py-6 text-center text-sm text-gray-500">
-      © {new Date().getFullYear()} ntemposd · Built with <a href="https://astro.build" class="underline hover:text-gray-700">Astro</a> & <a href="https://notion.com" class="underline hover:text-gray-700">Notion</a> · <a href="/links" class="underline hover:text-gray-700">Links</a>{
+      © {new Date().getFullYear()} ntemposd · Built with <a href="https://astro.build" class="underline hover:text-gray-700">Astro</a> & <a href="https://notion.com" class="underline hover:text-gray-700">Notion</a> · <a href="/links/" class="underline hover:text-gray-700">Links</a>{
         GA_ID && (
           <>
             {' '}·{' '}
