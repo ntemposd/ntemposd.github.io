@@ -58,7 +58,11 @@ if (isAstroImage(rawCover)) {
   cover = metaByName.get(toBase(rawCover)) ?? null;
 }
 
-const postUrl = new URL(Astro.url.pathname, (Astro.site ?? Astro.url.origin)).toString();
+const postPath =
+  Astro.url.pathname.endsWith('/') || /\.[^/]+$/.test(Astro.url.pathname)
+    ? Astro.url.pathname
+    : `${Astro.url.pathname}/`;
+const postUrl = new URL(postPath, Astro.site ?? Astro.url.origin).toString();
 
 // Map assets to hashed URLs for client-side rewrite of inline <img src="/posts/...">
 const postAssetUrls = import.meta.glob('../../assets/posts/*.{png,jpg,jpeg,webp,avif,svg}', {
@@ -93,13 +97,34 @@ if (typeof rawCover === 'string') {
 } else if (cover && (cover as any).src) {
   ogImage = new URL((cover as any).src, siteOrigin).toString();
 }
+
+const description =
+  (typeof entry.data.excerpt === 'string' && entry.data.excerpt.trim()) ||
+  'An essay by Dimitrios Ntempos, a technical product manager working on integrations, data and AI, about product, systems, and building.';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: entry.data.title,
+  description,
+  datePublished: entry.data.date,
+  ...(ogImage ? { image: ogImage } : {}),
+  author: {
+    '@type': 'Person',
+    name: 'Dimitrios Ntempos',
+    url: new URL('/', siteOrigin).href,
+  },
+  url: postUrl,
+};
 ---
 
 <Layout
   title={`${entry.data.title} — Dimitrios Ntempos`}
-  description={(typeof entry.data.excerpt === 'string' && entry.data.excerpt.trim()) || 'An essay by Dimitrios Ntempos, a technical product manager working on integrations, data and AI, about product, systems, and building.'}
+  description={description}
   entry={entry}
   ogImage={ogImage}
+  publishedTime={entry.data.date}
+  jsonLd={jsonLd}
 >
   <style>
     :global(.dots-overlay) {

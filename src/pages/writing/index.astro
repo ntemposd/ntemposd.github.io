@@ -1,12 +1,14 @@
 ---
 const destination = '/essays/';
+const canonical = new URL(destination, Astro.site ?? 'https://ntemposd.me').href;
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
     <meta http-equiv="refresh" content={`0;url=${destination}`} />
-    <link rel="canonical" href={destination} />
+    <link rel="canonical" href={canonical} />
     <title>Redirecting...</title>
     <script is:inline>
       window.location.replace('/essays/');
@@ -18,4 +20,3 @@ const destination = '/essays/';
     </p>
   </body>
 </html>
-

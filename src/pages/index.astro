@@ -64,6 +64,30 @@ const cardGlobalIndex = (section: 'projects'|'posts', localIndex: number) =>
 const CARD_WIDTHS = [480, 768, 1024]; // good spread, smaller payload
 const CARD_SIZES  = '(max-width: 1024px) 100vw, 600px';
 
+const siteUrl = new URL('/', Astro.site ?? 'https://ntemposd.me').href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Person',
+      name: 'Dimitrios Ntempos',
+      url: siteUrl,
+      jobTitle: 'Technical Product Manager',
+      sameAs: [
+        'https://github.com/ntemposd',
+        'https://www.linkedin.com/in/ntemposd',
+        'https://x.com/ntemposd',
+        'https://scholar.google.com/citations?user=V4LEU8EAAAAJ',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      name: 'Dimitrios Ntempos',
+      url: siteUrl,
+    },
+  ],
+};
+
 const normalizeProjectType = (value?: string) => {
   const normalized = value?.trim().toLowerCase();
 
@@ -85,10 +109,11 @@ const normalizeProjectType = (value?: string) => {
 <Layout
   title="Dimitrios Ntempos — Technical Product Manager"
   description="Dimitrios Ntempos is a technical product manager working on integrations, data and AI. Essays, side projects and notes from building."
+  jsonLd={jsonLd}
 >
   <!-- Opportunistic prefetch for likely next pages -->
-  <link rel="prefetch" href="/projects" />
-  <link rel="prefetch" href="/essays" />
+  <link rel="prefetch" href="/projects/" />
+  <link rel="prefetch" href="/essays/" />
 
   <!-- Hero -->
   <section class="mb-4">
@@ -97,7 +122,7 @@ const normalizeProjectType = (value?: string) => {
         <h1 class="text-3xl font-bold mb-2 text-gray-900">Dimitrios Ntempos</h1>
         <p class="text-lg font-semibold mb-2 text-gray-700">Technical Product Manager • Integrations, Data & AI</p>
         <p class="text-gray-600 max-w-2xl leading-relaxed mb-4">
-          I work on data-heavy B2B products and integrations across gaming, blockchain, travel tech and audience insights. I partner hands-on with engineering as a near-peer on system design, data contracts, SDK integrations, and data pipelines. Outside work, I'm curious about how AI systems behave and the biases in the data they learn from. I explore that through small side projects and sometimes I <a href="/essays" class="text-indigo-600 hover:underline">write</a>.
+          I work on data-heavy B2B products and integrations across gaming, blockchain, travel tech and audience insights. I partner hands-on with engineering as a near-peer on system design, data contracts, SDK integrations, and data pipelines. Outside work, I'm curious about how AI systems behave and the biases in the data they learn from. I explore that through small side projects and sometimes I <a href="/essays/" class="text-indigo-600 hover:underline">write</a>.
         </p>
         <p class="text-gray-600 max-w-2xl leading-relaxed mb-6">
          Currently at GWI, and SpaceXAI Ambassador Regional Leader for Thessaloniki.
@@ -158,7 +183,7 @@ const normalizeProjectType = (value?: string) => {
 
           <!-- CTA -->
           <a
-            href="/about"
+            href="/about/"
             class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                    bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                    focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
@@ -247,7 +272,7 @@ const normalizeProjectType = (value?: string) => {
     )}
 
     <div class="mt-6 flex justify-end">
-      <a href="/essays" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/essays/" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all essays →
@@ -331,7 +356,7 @@ const normalizeProjectType = (value?: string) => {
     </div>
 
     <div class="mt-6 flex justify-end">
-      <a href="/projects" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/projects/" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all projects →
