@@ -93,7 +93,7 @@ const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : nu
     {GA_ID && <AnalyticsBanner gaId={GA_ID} />}
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-gray-200">
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur">
       <div class="max-w-5xl mx-auto h-16 px-4 flex items-center justify-between">
         <!-- Brand -->
         <a href="/" class="font-bold text-xl text-gray-900">ntemposd</a>
@@ -110,7 +110,7 @@ const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : nu
         <div class="flex items-center gap-2">
           <!-- Theme toggle button -->
           <button
-            class="theme-toggle inline-flex items-center justify-center w-9 h-9 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
+            class="theme-toggle inline-flex items-center justify-center w-9 h-9 rounded-lg text-gray-700 hover:bg-gray-50"
             aria-label="Toggle dark mode"
             title="Toggle dark mode"
           >
