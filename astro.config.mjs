@@ -6,7 +6,7 @@ import { rehypeLazyContentImages } from './src/lib/rehype-lazy-content-images.mj
 
 export default defineConfig({
   site: 'https://ntemposd.me', // ✅ Use your custom domain (not GitHub Pages)
-  base: '/', // root
+  base: '/',                   // root
   output: 'static',
   trailingSlash: 'always',
   markdown: {

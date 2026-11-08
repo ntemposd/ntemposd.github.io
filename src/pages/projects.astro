@@ -8,10 +8,8 @@ const PROJECT_TYPES = ['Products', 'Experiments', 'Community'] as const;
 
 const sectionDescriptions: Record<(typeof PROJECT_TYPES)[number], string> = {
   Products: 'Small independent products, turning ideas into systems that people actually use.',
-  Experiments:
-    'Explorations through apps and prototypes, used to understand how new technologies behave in practice.',
-  Community:
-    'Work with local tech communities, bringing people together through events and shared initiatives.',
+  Experiments: 'Explorations through apps and prototypes, used to understand how new technologies behave in practice.',
+  Community: 'Work with local tech communities, bringing people together through events and shared initiatives.',
 };
 
 const normalizeProjectType = (value?: string) => {
@@ -36,13 +34,13 @@ const projects = (await getCollection('projects')).sort(
   (a, b) => (b.data.order ?? 0) - (a.data.order ?? 0)
 );
 
-let imageIndex = 0;
+let eagerIndex = 0;
 const sections = PROJECT_TYPES.map((title) => ({
   title,
   description: sectionDescriptions[title],
   items: projects
     .filter((project) => normalizeProjectType(project.data.type) === title)
-    .map((project) => ({ project, imageIndex: imageIndex++ })),
+    .map((project) => ({ project, eagerIndex: eagerIndex++ })),
 }));
 
 // Grab all rasters you placed under src/assets/projects
@@ -50,10 +48,7 @@ const rasters = import.meta.glob('../assets/projects/*.{png,jpg,jpeg,webp,avif}'
 
 // Resolve by **basename only**, so frontmatter like "/notion/projects/foo.webp" finds "foo.png/webp/avif"
 const resolveAsset = (pathStr: string) => {
-  const base = pathStr
-    .split('/')
-    .pop()
-    ?.replace(/\.[^.]+$/, '');
+  const base = pathStr.split('/').pop()?.replace(/\.[^.]+$/, '');
   if (!base) return null;
   for (const [k, mod] of Object.entries(rasters)) {
     if (new RegExp(`/${base}\\.(png|jpe?g|webp|avif)$`, 'i').test(k)) {
@@ -66,11 +61,10 @@ const resolveAsset = (pathStr: string) => {
 
 const WIDTHS = [480, 768, 1024, 1440];
 const SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
-const primaryProjectIndex =
-  sections
-    .flatMap((section) => section.items)
-    .find(({ project }) => (project.data.image ? resolveAsset(project.data.image) : null))
-    ?.imageIndex ?? -1;
+const primaryProjectIndex = sections
+  .flatMap((section) => section.items)
+  .find(({ project }) => (project.data.image ? resolveAsset(project.data.image) : null))
+  ?.eagerIndex ?? -1;
 ---
 
 <Layout
@@ -89,14 +83,12 @@ const primaryProjectIndex =
           <section>
             <div class="mb-6">
               <h2 class="text-2xl font-bold text-gray-900">{section.title}</h2>
-              <p class="mt-2 max-w-2xl text-sm leading-relaxed text-gray-700">
-                {section.description}
-              </p>
+              <p class="mt-2 max-w-2xl text-sm leading-relaxed text-gray-700">{section.description}</p>
             </div>
 
             {section.items.length > 0 ? (
               <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                {section.items.map(({ project: p, imageIndex: index }) => {
+                {section.items.map(({ project: p, eagerIndex: index }) => {
                   const external = p.data.link?.startsWith('http');
                   const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
                   const src = p.data.image ? resolveAsset(p.data.image) : null;
@@ -133,9 +125,7 @@ const primaryProjectIndex =
                         <h3 class="text-lg font-semibold mb-2 text-gray-900">{p.data.title}</h3>
                         <div class="flex flex-wrap gap-2 mb-3">
                           {tags.map((t) => (
-                            <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300">
-                              {t}
-                            </span>
+                            <span class="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600 dark:bg-gray-700 dark:text-gray-300">{t}</span>
                           ))}
                         </div>
                         <p class="text-gray-700 text-sm leading-relaxed">{p.data.blurb}</p>

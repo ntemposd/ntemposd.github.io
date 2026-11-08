@@ -7,6 +7,15 @@ import { applyLazyContentImages, readImageSize } from '../src/lib/rehype-lazy-co
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
+// Sizes checked once with sharp's metadata and with Python's struct/header read,
+// then written here as literals so the test does not call the helper for the expected value.
+const knownSizes = {
+  'public/posts/structural-patterns-in-product-management-img1.png': { width: 1724, height: 1876 },
+  'public/posts/sxsw-accelerator-img1.jpg': { width: 1910, height: 1000 },
+  'public/posts/early-stage-startup-websummit-img1.jpg': { width: 500, height: 375 },
+  'src/assets/posts/skg-startup-hub.webp': { width: 1536, height: 1024 },
+};
+
 test('primary images stay eager and high priority', () => {
   assert.deepEqual(contentImageLoading(true), {
     loading: 'eager',
@@ -21,7 +30,13 @@ test('other images are lazy at normal priority', () => {
   });
 });
 
-test('markdown figures become lazy and keep their intrinsic box', () => {
+test('sharp metadata matches the known fixture sizes', async () => {
+  for (const [rel, expected] of Object.entries(knownSizes)) {
+    assert.deepEqual(await readImageSize(path.join(root, rel)), expected, rel);
+  }
+});
+
+test('markdown figures become lazy and keep the known intrinsic box', async () => {
   const tree = {
     type: 'root',
     children: [
@@ -36,17 +51,16 @@ test('markdown figures become lazy and keep their intrinsic box', () => {
       },
     ],
   };
-  applyLazyContentImages(tree, root);
+  await applyLazyContentImages(tree, root);
   const img = tree.children[0].properties;
-  const file = path.join(root, 'public/posts/structural-patterns-in-product-management-img1.png');
   assert.equal(img.loading, 'lazy');
   assert.equal(img.fetchpriority, 'auto');
   assert.equal(img.src, '/posts/structural-patterns-in-product-management-img1.png');
-  assert.deepEqual({ width: img.width, height: img.height }, readImageSize(file));
-  assert.ok(img.width > 0 && img.height > 0);
+  assert.equal(img.width, 1724);
+  assert.equal(img.height, 1876);
 });
 
-test('an image that already opts into eager loading is left alone', () => {
+test('an image that already opts into eager loading is left alone', async () => {
   const tree = {
     type: 'root',
     children: [
@@ -58,7 +72,7 @@ test('an image that already opts into eager loading is left alone', () => {
       },
     ],
   };
-  applyLazyContentImages(tree, root);
+  await applyLazyContentImages(tree, root);
   assert.equal(tree.children[0].properties.loading, 'eager');
   assert.equal(tree.children[0].properties.fetchpriority, 'high');
 });
