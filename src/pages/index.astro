@@ -81,22 +81,6 @@ const jsonLd = {
   ],
 };
 
-const normalizeProjectType = (value?: string) => {
-  const normalized = value?.trim().toLowerCase();
-
-  switch (normalized) {
-    case 'product':
-    case 'products':
-      return 'Products';
-    case 'experiment':
-    case 'experiments':
-      return 'Experiments';
-    case 'community':
-      return 'Community';
-    default:
-      return value?.trim() || null;
-  }
-};
 ---
 
 <Layout
@@ -177,7 +161,7 @@ const normalizeProjectType = (value?: string) => {
           <!-- CTA -->
           <a
             href="/about/"
-            class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+            class="btn-primary inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                    bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                    focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
           >
@@ -265,7 +249,7 @@ const normalizeProjectType = (value?: string) => {
     )}
 
     <div class="mt-6 flex justify-end">
-      <a href="/essays/" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/essays/" class="btn-primary inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all essays →
@@ -285,7 +269,6 @@ const normalizeProjectType = (value?: string) => {
         const resolved = resolveLocal(p.data.image as string | undefined);
         const imageLoading = contentImageLoading(false);
         const anchorRel = isExternal(p.data.link) ? 'noopener noreferrer' : undefined;
-        const projectType = normalizeProjectType(p.data.type);
         const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
 
         return (
@@ -325,11 +308,6 @@ const normalizeProjectType = (value?: string) => {
                   Image not found
                 </div>
               )}
-              {projectType && (
-                <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-white px-2 py-1 rounded-md text-xs font-medium text-gray-900 shadow-md z-10">
-                  {projectType}
-                </div>
-              )}
             </div>
 
             <div class="p-5">
@@ -349,7 +327,7 @@ const normalizeProjectType = (value?: string) => {
     </div>
 
     <div class="mt-6 flex justify-end">
-      <a href="/projects/" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/projects/" class="btn-primary inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all projects →
