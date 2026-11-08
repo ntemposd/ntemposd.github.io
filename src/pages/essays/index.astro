@@ -83,26 +83,27 @@ const normTags = (tags: unknown) =>
             href={`/essays/${post.slug}/`}
             class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
                    shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-            data-no-invert
           >
             <div class="relative aspect-[16/9] overflow-hidden bg-gray-50">
               {cover ? (
-                <Image
-                  src={cover}
-                  alt={post.data.title}
-                  widths={[480, 768, 1200, 1600]}
-                  sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
-                  loading="eager"
-                  fetchpriority="high"
-                  decoding="async"
-                  class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
-                />
+                <div class="absolute inset-0" data-preserve-colors>
+                  <Image
+                    src={cover}
+                    alt={post.data.title}
+                    widths={[480, 768, 1200, 1600]}
+                    sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
+                    class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
+                  />
+                  <div class="absolute inset-0 bg-gradient-to-tl from-black/40 via-black/0 to-transparent"></div>
+                </div>
               ) : (
                 <div class="absolute inset-0 grid place-items-center text-gray-400 text-sm">
                   No cover
                 </div>
               )}
-              <div class="absolute inset-0 bg-gradient-to-tl from-black/40 via-black/0 to-transparent"></div>
               <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-white px-2 py-1 rounded-md text-xs font-medium text-gray-900 shadow-md z-10">
                 {d}
               </div>
