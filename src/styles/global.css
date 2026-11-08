@@ -12,25 +12,39 @@
   color-scheme: light dark;
 }
 
-/* DARK MODE: Global Inversion */
+/* DARK MODE: one filter on the root inverts text and surfaces.
+   Descendant filters run first, so media must apply the inverse of this
+   exact chain or it is painted a second time. brightness(1.25) and
+   contrast(0.99) are part of the root filter; skipping them (or repeating
+   invert/hue-rotate in the same order) leaves photos brighter and hue-shifted.
+   Inverse, applied child-first: brightness(1/1.25) contrast(1/0.99)
+   hue-rotate(180deg) invert(1). hue-rotate(180deg) is its own inverse. */
 html.dark {
+  --dark-media-restore: brightness(0.8) contrast(1.010101) hue-rotate(180deg) invert(1);
   filter: invert(1) hue-rotate(180deg) contrast(0.99) brightness(1.25);
   color: #fff;
 }
 
-/* FIX: Restore images/media to normal appearance */
-html.dark img,
-html.dark video,
-html.dark picture,
-html.dark canvas {
-  filter: invert(1) hue-rotate(180deg) contrast(0.99);
+/* Restore photographs, covers, portraits, and inline images once.
+   Do not also filter <picture>: the inner <img> is enough, and a second
+   filter would leave the photo inverted. */
+html.dark :is(img, video, canvas) {
+  filter: var(--dark-media-restore);
   mix-blend-mode: normal;
 }
 
-/* HARD FIX: opt out of inversion for any container (best for Astro <Image />) */
-html.dark [data-no-invert] {
-  filter: none !important;
-  mix-blend-mode: normal !important;
+/* A cover stack (photo + scrim) has to be restored as one layer. Filtering
+   only the img lets the scrim composite in between, and the root filter
+   turns that dark tint into a light wash. Media inside the stack must not
+   be filtered again. */
+html.dark [data-preserve-colors] {
+  filter: var(--dark-media-restore);
+  mix-blend-mode: normal;
+}
+
+html.dark [data-preserve-colors] :is(img, video, picture, canvas) {
+  filter: none;
+  mix-blend-mode: normal;
 }
 
 
