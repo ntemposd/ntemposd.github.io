@@ -65,12 +65,9 @@ const plainText = (value) => (typeof value === 'string' ? value.trim() : '');
       </div>
     </section>
 
-    <!-- Values -->
-    <section class="mb-8" aria-labelledby="values">
-      <h2 id="values" class="text-2xl font-semibold mb-3">Values</h2>
-      <p class="text-gray-700 mb-6">
-       The way products are built reflects the values behind them. These principles guide how I work, collaborate, and improve systems over time.
-      </p>
+    <!-- How I work: the four values cards -->
+    <section class="mb-8" aria-labelledby="how-i-work">
+      <h2 id="how-i-work" class="text-2xl font-semibold mb-6">How I work</h2>
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
         <div class={card}>
           <h3 class="text-lg font-semibold mb-2">Simplicity</h3>
@@ -99,12 +96,9 @@ const plainText = (value) => (typeof value === 'string' ? value.trim() : '');
       </div>
     </section>
 
-    <!-- Craftsmanship -->
-    <section class="mb-8" aria-labelledby="professional">
-      <h2 id="professional" class="text-2xl font-semibold mb-3">How I work</h2>
-      <p class="text-gray-700 mb-6">
-        Over the past decade I’ve worked within startups and scaleups designing resilient systems, automating workflows, and translating data into measurable outcomes. I’m most effective where product, data, and execution intersect.
-      </p>
+    <!-- What I do: the six capability cards -->
+    <section class="mb-8" aria-labelledby="what-i-do">
+      <h2 id="what-i-do" class="text-2xl font-semibold mb-6">What I do</h2>
 
       <div class="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
         {working.map((item, i) => (
@@ -129,10 +123,7 @@ const plainText = (value) => (typeof value === 'string' ? value.trim() : '');
 
     <!-- Experience -->
     <section class="mb-4" aria-labelledby="experience">
-      <h2 id="experience" class="text-2xl font-semibold mb-3">Latest experience</h2>
-      <p class="text-gray-700 mb-6">
-        Across these roles I’ve led products from concept to scale — shaping strategy, improving operations, and aligning teams around clear outcomes. My work spans data, integrations, and product delivery, always with an eye on creating value that lasts.
-      </p>
+      <h2 id="experience" class="text-2xl font-semibold mb-6">My experience</h2>
 
       <div class="relative">
         <ul class="space-y-8">
@@ -206,8 +197,7 @@ const plainText = (value) => (typeof value === 'string' ? value.trim() : '');
     <section class="mb-4" aria-labelledby="outside">
       <h2 id="outside" class="text-2xl font-semibold mb-3">Beyond work</h2>
       <p class="text-gray-700 mb-6">
-        Outside of product work, I play and follow basketball closely, explore sports analytics, 
-        and enjoy studying systems across different domains — from markets to team dynamics.
+        Outside of product work, I enjoy time with family, get out into nature, play basketball, and try to keep a close eye on the game and its analytics.
       </p>
     </section>
   </article>
