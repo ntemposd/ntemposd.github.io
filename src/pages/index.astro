@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import { contentImageLoading } from '../lib/image-loading.mjs';
 
 // Local assets (under src/assets)
 import profile from '../assets/profile.png';
@@ -49,16 +50,8 @@ projects = projects
   .sort((a, b) => (b.data.order ?? 0) - (a.data.order ?? 0))
   .slice(0, 3);
 
-/* ---------- Loading strategy ---------- */
-const PRELOAD_BUDGET = 6; // total across sections
-const eagerForIndex = (idx: number) => (idx < PRELOAD_BUDGET ? 'eager' : 'lazy');
-const priorityForIndex = (idx: number) => (idx < PRELOAD_BUDGET ? 'high' : 'auto');
 const isExternal = (href?: string) => !!href && /^https?:\/\//i.test(href);
-
-// Precompute a global index across project+post cards for consistent eager budget
-const totalCards = projects.length + posts.length;
-const cardGlobalIndex = (section: 'projects'|'posts', localIndex: number) =>
-  section === 'projects' ? localIndex : projects.length + localIndex;
+const primaryPostIndex = posts.findIndex((post) => resolveLocal(post.data.image as string | undefined));
 
 // Card image sizes: keep it tight for 3-col grid
 const CARD_WIDTHS = [480, 768, 1024]; // good spread, smaller payload
@@ -88,22 +81,6 @@ const jsonLd = {
   ],
 };
 
-const normalizeProjectType = (value?: string) => {
-  const normalized = value?.trim().toLowerCase();
-
-  switch (normalized) {
-    case 'product':
-    case 'products':
-      return 'Products';
-    case 'experiment':
-    case 'experiments':
-      return 'Experiments';
-    case 'community':
-      return 'Community';
-    default:
-      return value?.trim() || null;
-  }
-};
 ---
 
 <Layout
@@ -184,7 +161,7 @@ const normalizeProjectType = (value?: string) => {
           <!-- CTA -->
           <a
             href="/about/"
-            class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+            class="btn-primary inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                    bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                    focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
           >
@@ -200,8 +177,8 @@ const normalizeProjectType = (value?: string) => {
           alt="Dimitrios Ntempos portrait"
           width={260}
           height={260}
-          loading="eager"
-          fetchpriority="high"
+          loading={contentImageLoading(true).loading}
+          fetchpriority={contentImageLoading(true).fetchpriority}
           decoding="async"
           class="w-52 h-52 md:w-60 md:h-60 rounded-full object-cover border-4 border-white shadow-md"
         />
@@ -219,9 +196,9 @@ const normalizeProjectType = (value?: string) => {
     {posts.length ? (
       <div class="grid md:grid-cols-3 gap-6">
         {posts.map((p, i) => {
-          const gIdx = cardGlobalIndex('posts', i);
           const coverPath = p.data.image as string | undefined;
           const resolved = resolveLocal(coverPath);
+          const imageLoading = contentImageLoading(i === primaryPostIndex);
 
           return (
             <a
@@ -235,8 +212,8 @@ const normalizeProjectType = (value?: string) => {
                     <img
                       src={resolved.asset}
                       alt={p.data.title ?? 'Post cover'}
-                      loading={eagerForIndex(gIdx)}
-                      fetchpriority={priorityForIndex(gIdx)}
+                      loading={imageLoading.loading}
+                      fetchpriority={imageLoading.fetchpriority}
                       decoding="async"
                       class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
                     />
@@ -246,8 +223,8 @@ const normalizeProjectType = (value?: string) => {
                       alt={p.data.title ?? 'Post cover'}
                       widths={CARD_WIDTHS}
                       sizes={CARD_SIZES}
-                      loading={eagerForIndex(gIdx)}
-                      fetchpriority={priorityForIndex(gIdx)}
+                      loading={imageLoading.loading}
+                      fetchpriority={imageLoading.fetchpriority}
                       decoding="async"
                       class="absolute inset-0 h-full w-full object-cover group-hover:scale-102 transition-transform duration-300 ease-out"
                     />
@@ -272,7 +249,7 @@ const normalizeProjectType = (value?: string) => {
     )}
 
     <div class="mt-6 flex justify-end">
-      <a href="/essays/" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/essays/" class="btn-primary inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all essays →
@@ -288,11 +265,10 @@ const normalizeProjectType = (value?: string) => {
     </p>
 
     <div class="grid md:grid-cols-3 gap-6">
-      {projects.map((p, i) => {
-        const gIdx = cardGlobalIndex('projects', i);
+      {projects.map((p) => {
         const resolved = resolveLocal(p.data.image as string | undefined);
+        const imageLoading = contentImageLoading(false);
         const anchorRel = isExternal(p.data.link) ? 'noopener noreferrer' : undefined;
-        const projectType = normalizeProjectType(p.data.type);
         const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
 
         return (
@@ -310,8 +286,8 @@ const normalizeProjectType = (value?: string) => {
                   <img
                     src={resolved.asset}
                     alt={p.data.title ?? 'Project image'}
-                    loading={eagerForIndex(gIdx)}
-                    fetchpriority={priorityForIndex(gIdx)}
+                    loading={imageLoading.loading}
+                    fetchpriority={imageLoading.fetchpriority}
                     decoding="async"
                     class="w-full h-full object-contain p-6 group-hover:scale-102 transition-transform duration-300 ease-out"
                   />
@@ -321,8 +297,8 @@ const normalizeProjectType = (value?: string) => {
                     alt={p.data.title ?? 'Project image'}
                     widths={CARD_WIDTHS}
                     sizes={CARD_SIZES}
-                    loading={eagerForIndex(gIdx)}
-                    fetchpriority={priorityForIndex(gIdx)}
+                    loading={imageLoading.loading}
+                    fetchpriority={imageLoading.fetchpriority}
                     decoding="async"
                     class="w-full h-full object-contain p-6 group-hover:scale-102 transition-transform duration-300 ease-out"
                   />
@@ -330,11 +306,6 @@ const normalizeProjectType = (value?: string) => {
               ) : (
                 <div class="w-full h-full grid place-items-center text-gray-400 text-sm">
                   Image not found
-                </div>
-              )}
-              {projectType && (
-                <div class="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm border border-white px-2 py-1 rounded-md text-xs font-medium text-gray-900 shadow-md z-10">
-                  {projectType}
                 </div>
               )}
             </div>
@@ -356,7 +327,7 @@ const normalizeProjectType = (value?: string) => {
     </div>
 
     <div class="mt-6 flex justify-end">
-      <a href="/projects/" class="inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
+      <a href="/projects/" class="btn-primary inline-flex items-center justify-center px-4 py-2.5 rounded-full text-sm font-medium
                  bg-indigo-600 text-white hover:bg-indigo-700 transition-colors
                  focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
         View all projects →

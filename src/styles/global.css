@@ -47,6 +47,26 @@ html.dark [data-preserve-colors] :is(img, video, picture, canvas) {
   mix-blend-mode: normal;
 }
 
+/* Primary actions share one control. Light mode keeps the utility colors.
+   The root invert would repaint an indigo fill as a pale lavender and the
+   label near-black. This restores the authored colors after that filter. */
+html.dark .btn-primary {
+  filter: var(--dark-media-restore);
+  background-color: #5a54ec;
+  color: #ffffff;
+  border-color: transparent;
+}
+
+html.dark .btn-primary:hover,
+html.dark .btn-primary:focus-visible {
+  outline: 2px solid #e0e7ff;
+  outline-offset: 3px;
+}
+
+html.dark .btn-primary:hover {
+  background-color: #564fe8;
+}
+
 
 /* Optional dots overlay */
 .dots-overlay {

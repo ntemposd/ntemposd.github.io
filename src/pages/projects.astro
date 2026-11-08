@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
+import { contentImageLoading } from '../lib/image-loading.mjs';
 
 const PROJECT_TYPES = ['Products', 'Experiments', 'Community'] as const;
 
@@ -60,9 +61,10 @@ const resolveAsset = (pathStr: string) => {
 
 const WIDTHS = [480, 768, 1024, 1440];
 const SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw';
-
-// eager strategy: first 6 images always eager
-const isEager = (i: number) => i < 6;
+const primaryProjectIndex = sections
+  .flatMap((section) => section.items)
+  .find(({ project }) => (project.data.image ? resolveAsset(project.data.image) : null))
+  ?.eagerIndex ?? -1;
 ---
 
 <Layout
@@ -90,7 +92,7 @@ const isEager = (i: number) => i < 6;
                   const external = p.data.link?.startsWith('http');
                   const tags = Array.isArray(p.data.tags) ? p.data.tags : [];
                   const src = p.data.image ? resolveAsset(p.data.image) : null;
-                  const eager = isEager(index);
+                  const imageLoading = contentImageLoading(index === primaryProjectIndex);
 
                   return (
                     <a
@@ -107,8 +109,8 @@ const isEager = (i: number) => i < 6;
                             alt={p.data.title}
                             widths={WIDTHS}
                             sizes={SIZES}
-                            loading={eager ? 'eager' : 'lazy'}
-                            fetchpriority={index === 0 ? 'high' : (eager ? 'low' : 'low')}
+                            loading={imageLoading.loading}
+                            fetchpriority={imageLoading.fetchpriority}
                             decoding="async"
                             class="w-full h-full object-contain p-6 group-hover:scale-100 transition-transform duration-300 ease-out"
                           />
