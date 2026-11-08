@@ -24,32 +24,38 @@ function localImageFile(src, root) {
   return candidates.find((file) => fs.existsSync(file)) ?? null;
 }
 
-async function walk(node, root) {
+async function walk(node, root, resolveSrc) {
   if (!node || typeof node !== 'object') return;
   if (node.type === 'element' && node.tagName === 'img') {
     const props = node.properties ?? (node.properties = {});
+    const originalSrc = props.src;
     if (!props.loading) {
       props.loading = 'lazy';
       if (!props.fetchpriority) props.fetchpriority = 'auto';
     }
     if (!props.width || !props.height) {
-      const file = localImageFile(props.src, root);
+      const file = localImageFile(originalSrc, root);
       const size = file ? await readImageSize(file) : null;
       if (size) {
         props.width = size.width;
         props.height = size.height;
       }
     }
+    if (typeof resolveSrc === 'function' && typeof originalSrc === 'string') {
+      const next = resolveSrc(originalSrc);
+      if (typeof next === 'string' && next.length > 0) props.src = next;
+    }
   }
-  for (const child of node.children ?? []) await walk(child, root);
+  for (const child of node.children ?? []) await walk(child, root, resolveSrc);
 }
 
-export async function applyLazyContentImages(tree, root = process.cwd()) {
-  await walk(tree, root);
+export async function applyLazyContentImages(tree, rootOrOptions = process.cwd()) {
+  const options = typeof rootOrOptions === 'string' ? { root: rootOrOptions } : rootOrOptions ?? {};
+  const root = options.root ?? process.cwd();
+  await walk(tree, root, options.resolveSrc);
   return tree;
 }
 
 export function rehypeLazyContentImages(options = {}) {
-  const root = options.root ?? process.cwd();
-  return (tree) => applyLazyContentImages(tree, root);
+  return (tree) => applyLazyContentImages(tree, options);
 }

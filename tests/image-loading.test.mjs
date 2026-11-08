@@ -45,19 +45,58 @@ test('markdown figures become lazy and keep the known intrinsic box', async () =
         tagName: 'img',
         properties: {
           src: '/posts/structural-patterns-in-product-management-img1.png',
-          alt: '',
+          alt: 'diagram',
         },
+        children: [],
+      },
+      {
+        type: 'element',
+        tagName: 'p',
+        properties: {},
+        children: [
+          {
+            type: 'element',
+            tagName: 'a',
+            properties: { href: 'https://example.com/source' },
+            children: [
+              {
+                type: 'element',
+                tagName: 'img',
+                properties: { src: 'https://example.com/remote.png', alt: 'remote' },
+                children: [],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: 'element',
+        tagName: 'img',
+        properties: { src: '/posts/missing-figure.png', alt: 'missing' },
         children: [],
       },
     ],
   };
-  await applyLazyContentImages(tree, root);
+  await applyLazyContentImages(tree, {
+    root,
+    resolveSrc: (src) =>
+      src.endsWith('structural-patterns-in-product-management-img1.png')
+        ? '/_astro/structural-patterns-in-product-management-img1.example.png'
+        : null,
+  });
   const img = tree.children[0].properties;
   assert.equal(img.loading, 'lazy');
   assert.equal(img.fetchpriority, 'auto');
-  assert.equal(img.src, '/posts/structural-patterns-in-product-management-img1.png');
+  assert.equal(img.alt, 'diagram');
+  assert.equal(img.src, '/_astro/structural-patterns-in-product-management-img1.example.png');
   assert.equal(img.width, 1724);
   assert.equal(img.height, 1876);
+  const linked = tree.children[1].children[0];
+  assert.equal(linked.properties.href, 'https://example.com/source');
+  assert.equal(linked.children[0].properties.src, 'https://example.com/remote.png');
+  assert.equal(linked.children[0].properties.alt, 'remote');
+  assert.equal(linked.children[0].properties.loading, 'lazy');
+  assert.equal(tree.children[2].properties.src, '/posts/missing-figure.png');
 });
 
 test('an image that already opts into eager loading is left alone', async () => {
