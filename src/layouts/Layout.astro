@@ -272,6 +272,25 @@ const jsonLdText = jsonLd ? JSON.stringify(jsonLd).replace(/</g, '\\u003c') : nu
           header?.classList.toggle('shadow-sm', y > 4);
         });
       })();
+
+      // Drop the card skeleton once its image settles. Listeners only — no refetch.
+      (() => {
+        document.querySelectorAll('.media-frame').forEach((frame) => {
+          const img = frame.querySelector('img');
+          if (!img) return;
+          const ready = () => {
+            frame.classList.add('is-ready');
+            frame.classList.remove('is-error');
+          };
+          const failed = () => {
+            frame.classList.add('is-error');
+            frame.classList.remove('is-ready');
+          };
+          img.addEventListener('load', ready, { once: true });
+          img.addEventListener('error', failed, { once: true });
+          if (img.complete) (img.naturalWidth > 0 ? ready : failed)();
+        });
+      })();
     </script>
   </body>
 </html>
