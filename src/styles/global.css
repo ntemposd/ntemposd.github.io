@@ -67,6 +67,66 @@ html.dark .btn-primary:hover {
   background-color: #564fe8;
 }
 
+/* Reserved card art. The gradient is paint on the wrapper, not a second fetch.
+   The root dark filter inverts this with the page, so one light skeleton reads
+   as a dark skeleton too. Loaded photos still use the restore filter above. */
+@keyframes media-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+.media-frame {
+  background-color: #e5e7eb;
+  background-image: linear-gradient(
+    105deg,
+    #e5e7eb 0%,
+    #e5e7eb 38%,
+    #f7f8fa 50%,
+    #e5e7eb 62%,
+    #e5e7eb 100%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  animation: media-shimmer 1.4s ease-in-out infinite;
+}
+
+.media-frame.is-ready {
+  animation: none;
+  background-image: none;
+  background-color: #f9fafb;
+}
+
+.media-frame.is-error {
+  animation: none;
+  background-color: #eef0f3;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(15, 23, 42, 0.045) 8px,
+    rgba(15, 23, 42, 0.045) 9px
+  );
+  background-size: auto;
+}
+
+.media-frame.is-error img {
+  opacity: 0;
+}
+
+.media-frame:not(.is-ready) .cover-scrim {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-ping,
+  .media-frame {
+    animation: none;
+  }
+
+  .media-frame:not(.is-error) {
+    background-image: none;
+  }
+}
 
 /* Optional dots overlay */
 .dots-overlay {

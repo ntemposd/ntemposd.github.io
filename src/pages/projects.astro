@@ -102,7 +102,7 @@ const primaryProjectIndex = sections
                       class="group block rounded-2xl bg-white border border-gray-100 overflow-hidden
                              shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                     >
-                      <div class="aspect-[16/9] overflow-hidden bg-gray-50">
+                      <div class={`aspect-[16/9] overflow-hidden ${src ? 'media-frame' : 'bg-gray-50'}`}>
                         {src ? (
                           <Image
                             src={src}
